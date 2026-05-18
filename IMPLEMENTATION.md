@@ -603,72 +603,41 @@ GET /api/graph
 **Embedding infrastructure:**
 
 **Model selection:**
-- Base model: `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` (384-dimensional embeddings, multilingual, ~150ms latency per 512 tokens)
-- Fallback: `sentence-transformers/all-MiniLM-L6-v2` if multilingual not needed (faster, 8% lower quality)
-- Deployment: run as microservice (Flask + gunicorn) on GPU-backed instance; cache embeddings in PostgreSQL pgvector extension
+- Use multilingual transformer model for semantic embeddings
+- Deployment: run as microservice (Flask + gunicorn) on GPU-backed instance; cache embeddings in pgvector
 
 **Embedding sync strategy:**
-- When obligation created/updated: synchronously generate embedding + store in `obligations.embedding` vector column
-- When concept updated: regenerate all obligation embeddings that reference that concept (async, daily batch)
-- Embedding version: track which model version created each embedding; re-embed on model upgrade (one-time 30-min batch job per 3,600 obligations)
+- When obligation created/updated: synchronously generate and store embedding
+- When concept updated: regenerate related obligation embeddings (async batch process)
+- Embedding versioning: track which model version created each embedding; re-embed on model upgrade
 
 **Query types & implementation:**
 
-```
-1. Full-text search: "Find all obligations mentioning 'retail deposit'"
-   SQL: SELECT * FROM obligations 
-        WHERE to_tsvector('english', summary) @@ plainto_tsquery('english', 'retail deposit')
-   Returns: obligations matching any form of the term
-   Latency: <100ms (indexed)
+**Query types:**
 
-2. Semantic search: "Find obligations about liquidity coverage"
-   Process:
-   a) Embed query: query_embedding = embed_model("liquidity coverage")
-   b) Vector similarity: SELECT * FROM obligations 
-                        ORDER BY embedding <-> query_embedding 
-                        LIMIT 20
-   c) Rank by relevance (cosine similarity score)
-   Returns: LCR + NSFR + ALMM liquidity-related obligations, sorted by relevance
-   Latency: <500ms (pgvector similarity search on indexed vectors)
+1. **Full-text search:** Find obligations by keyword or phrase
+   - Use PostgreSQL full-text search on summary + text fields
+   - Returns: all matching obligations across regulations
 
-3. Concept-based search: "Find all obligations using concept C_12345"
-   SQL: SELECT DISTINCT o.* FROM obligations o
-        JOIN obligation_concept_grounding ocg ON o.id = ocg.obligation_id
-        WHERE ocg.concept_id = 'C_12345'
-   Returns: all obligations grounded in that concept across all regulations
-   Latency: <50ms (indexed join)
+2. **Semantic search:** Find obligations by concept or meaning
+   - Embed query, perform vector similarity search in pgvector
+   - Returns: most relevant obligations across regulations (ranked by similarity)
 
-4. Tension search: "Find conflicts between LCR and NSFR"
-   SQL: SELECT * FROM tensions 
-        WHERE (obligation_a_id IN (SELECT id FROM obligations WHERE regulation_id = 'lcr')
-          AND obligation_b_id IN (SELECT id FROM obligations WHERE regulation_id = 'nsfr'))
-          OR (obligation_a_id IN (SELECT id FROM obligations WHERE regulation_id = 'nsfr')
-          AND obligation_b_id IN (SELECT id FROM obligations WHERE regulation_id = 'lcr'))
-   Returns: all tensions involving both regulations
-   Latency: <200ms (indexed)
+3. **Concept-based search:** Find all obligations using a specific concept
+   - Join obligations with concept grounding table
+   - Returns: all obligations referencing that concept
 
-5. Time-travel: "Show me LCR obligations as of 2023-06-01"
-   SQL: SELECT * FROM obligations 
-        WHERE regulation_id = 'lcr' 
-          AND effective_from <= '2023-06-01' 
-          AND (effective_to IS NULL OR effective_to > '2023-06-01')
-        ORDER BY effective_from DESC
-   Returns: obligations as they existed on that date (with version info)
-   Latency: <100ms (indexed on effective_from, effective_to)
+4. **Tension search:** Find conflicts between specific regulations
+   - Query tensions table filtered by regulation pair
+   - Returns: all detected tensions involving both regulations
 
-6. Impact search: "If we change the haircut from 15% to 20%, which obligations are affected?"
-   Process:
-   a) Find parameter in formulas: SELECT f.* FROM formulas f 
-                                  WHERE f.ast::text LIKE '%haircut%15%'
-   b) Find obligations using formula: SELECT o.* FROM obligations o
-                                      JOIN obligation_formula_binding ofb ON o.id = ofb.obligation_id
-                                      WHERE ofb.formula_id IN (SELECT id FROM step_a)
-   c) Find fields using those obligations: SELECT f.* FROM fields f
-                                          WHERE f.obligation_id IN (SELECT id FROM step_b)
-   d) Return: obligations affected + fields affected + estimation of change propagation
-   Returns: map showing impact chain: formula → obligations → fields affected
-   Latency: <500ms (requires AST traversal + multiple joins)
-```
+5. **Time-travel:** Show obligations as they existed at a specific date
+   - Filter by effective_from/effective_to date ranges
+   - Returns: obligations in effect at the requested date
+
+6. **Impact search:** Find what changes if a formula parameter changes
+   - Traverse formula AST to find affected obligations and fields
+   - Returns: map of affected obligations and reporting cells
 
 **Indexing strategy:**
 
@@ -678,13 +647,13 @@ GET /api/graph
 - Foreign key: indexes on `obligation_id`, `concept_id`, `formula_id` (auto-created)
 - Custom: composite index on `(regulation_id, deontic_type, status)` for dashboard filtering
 
-**Query performance targets:**
+**Query performance expectations:**
 
-- Full-text: <100ms for any query
-- Semantic: <500ms for any query (governed by embedding lookup + vector similarity search)
-- Temporal: <100ms
-- Impact: <1000ms (AST traversal is expensive; acceptable as async operation)
-- Concurrent users: 50+ simultaneous queries without degradation
+- Full-text search: fast lookup via indexed queries
+- Semantic search: slower due to embedding computation + similarity search
+- Temporal queries: indexed on effective dates for quick filtering
+- Impact queries: complex traversal; consider async operation
+- Scalability: design for 50+ concurrent users without degradation
 
 ---
 
@@ -705,17 +674,15 @@ GET /api/graph
 
 - **Batch models** (NER, Deontic, Grammar Matcher): Run offline as scheduled jobs
   - Input: new/updated obligations from database
-  - Process: inference on 100 obligations per batch (GPU cluster, ~2 minutes per batch)
+  - Process: inference on obligations in batches
   - Output: predictions stored back in database + annotation_metadata record
-  - Schedule: daily at 02:00 UTC (low-traffic window)
-  - Cost: 1 GPU (4–8 GPU-hours/day) = ~$20/day ($600/month)
+  - Schedule: periodic batch processing (daily or as-needed)
 
 - **Realtime model** (Concept Grounding): Deploy as microservice (on-demand inference)
-  - Host: GPU-backed container (AWS SageMaker, Replicate, or self-hosted)
-  - Endpoint: POST /api/ml/ground-obligation → returns concept candidates in 100ms
+  - Host: GPU-backed container or cloud inference service
+  - Endpoint: POST /api/ml/ground-obligation → returns concept candidates
   - Used by: UI when user manually creates obligation (optional grounding hint)
-  - Scalability: auto-scale 2–10 replicas based on request volume
-  - Cost: ~$50/day baseline + $5 per 1M inferences ($500–1000/month typical)
+  - Scalability: auto-scale based on request volume
 
 **Model versioning:**
 
@@ -772,11 +739,11 @@ models/
 
 **Monitoring & failure handling:**
 
-- **Latency SLA:** <50ms p95 for batch models, <100ms p95 for realtime
-- **Accuracy drift:** Monitor F1 score daily; if drops >2%, alert team
-- **Availability:** model serving SLA 99.5%; failover to CPU inference (slower but always works)
-- **Input data quality:** track distribution shift; if input distribution changes >10%, retrain
-- **Fallback:** if model inference fails, use rule-based baseline classifier (90% recall, 70% precision)
+- **Latency monitoring:** Track inference speed for batch and realtime models; alert on degradation
+- **Accuracy drift:** Monitor F1 score regularly; alert on significant drops
+- **Availability:** Model serving SLA; failover to CPU inference or rule-based baseline if GPU unavailable
+- **Input data quality:** Track distribution shift; retrain when input patterns change significantly
+- **Fallback strategy:** If model inference fails, use rule-based baseline classifier
 
 ### Frontend Integration
 
@@ -793,18 +760,18 @@ models/
 - Completeness summary: box plot of completion % across obligation types
 
 **Register**
-- Table pagination: 50 obligations/page; lazy-load on scroll
-  - Real data: `/api/obligations?limit=50&offset=0` + filters
-  - Performance: <2s first paint (API cached, client-side sorting disabled)
-- Sortable columns: citation (structural node ID), summary, status, completeness, deadline
-  - Sorting: done server-side (SQL ORDER BY) not client-side
+- Table pagination: paginate large obligation sets
+  - Real data: fetch from `/api/obligations` with filters
+  - Performance: optimize for responsiveness (avoid loading all 3,600+ at once)
+- Sortable columns: citation, summary, status, completeness, deadline
+  - Sorting: server-side for efficiency
 - Filter sidebar:
-  - Regulation multi-select: `/api/regulations`
+  - Regulation multi-select
   - Status checkboxes: obligation, prohibition, definition, exception, condition, delegation, substitution
-  - Date range picker: point-in-time by effective_from/effective_to
+  - Date range picker: point-in-time filtering
   - Authority level: Level 1 | Level 2 | Level 3 | National | Opinion
   - Validation status: Validated | Needs Review | Disputed | Rejected
-- Click row → `/api/obligations/{id}` detail view
+- Click row to view obligation detail
 
 **Obligation Detail**
 - Full lineage: clickable chain showing:
@@ -846,29 +813,29 @@ models/
 ### Before shipping:
 
 **Knowledge artifacts (Layers 1–7) complete:**
-- [ ] 3,000+ structural nodes parsed for 4+ regulations
-- [ ] Ontology of 1,000+ concepts extracted and validated
-- [ ] 3,600+ obligations extracted with 80%+ accuracy
-- [ ] 50+ tensions detected and validated
-- [ ] Field bindings for 40,000+ reporting cells
+- [ ] Structural nodes parsed for multiple regulations
+- [ ] Ontology of concepts extracted and validated
+- [ ] Obligations extracted with high accuracy
+- [ ] Tensions detected and validated
+- [ ] Field bindings mapped to reporting cells
 
 **Infrastructure (Layers 8–11) complete:**
 - [ ] Temporal layer: versioning working, point-in-time queries functional
 - [ ] Provenance layer: authority levels tagged, confidence scoring working
 - [ ] Generative layer: grammar rules defined, completeness validated
-- [ ] Quality layer: 80%+ of obligations validated by humans, dispute resolution workflow tested
+- [ ] Quality layer: obligations validated by humans, dispute resolution workflow tested
 - [ ] Database schema finalized and populated
 - [ ] API endpoints tested and documented
-- [ ] Search/query engine benchmarked (sub-second responses)
+- [ ] Search/query engine functional and responsive
 
 **Frontend integration complete:**
-- [ ] API queries wired to all existing UI pages
+- [ ] API queries wired to all UI pages
 - [ ] Dashboard shows real data (not mock)
-- [ ] Register shows real obligations with filters
+- [ ] Register shows obligations with filters
 - [ ] Obligation detail shows full lineage
-- [ ] Conflicts graph renders real tensions
+- [ ] Conflicts graph renders tensions
 - [ ] All interactive features tested (click, filter, sort, drill-in)
-- [ ] Performance acceptable (page load <2s, graph render <3s)
+- [ ] Performance acceptable for intended user load
 - [ ] Mobile responsiveness verified
 
 **Quality assurance:**
@@ -889,89 +856,51 @@ models/
 
 ## Post-Launch Operations
 
-**Week 1 (Launch Stabilization):**
-- Monitor API latency (target p95 <500ms), database query times
+**Immediate post-launch (First period):**
+- Monitor API performance and database query times
 - Collect user feedback: UI usability, search relevance, obligation accuracy
-- Identify pattern of disputes: which obligation types are disputed most? (likely: conditional, computational, field bindings)
-- Fix critical bugs: missing obligations, incorrect tensions, broken lineage links
-- Metrics: track API uptime, search latency, user session volume
+- Identify patterns of user disputes (which obligation types are questioned most?)
+- Fix critical bugs: missing obligations, incorrect tensions, broken lineage
+- Monitor system health: API uptime, latency, error rates
 
-**Week 2–4 (Validation Sprint):**
-- Review disputes: expected 5–10% of obligations flagged (360–360 disputes)
-  - Categorize: annotation error (model mistake), missing context, correct but low confidence
-  - Adjudicate: 80% validation speed (10–15 obligations/hour/validator) = ~4 validator-weeks for all disputes
-- Retrain ML models:
-  - Collect all validated + corrected obligations into new training set
-  - Re-run deontic classifier, concept grounding, grammar matcher fine-tuning
-  - Measure F1 improvement (target: +2–3% from baseline)
-  - Stage new model version; measure user feedback on staged predictions
-  - Promote to production if F1 improved >1%
-- Metrics: validation completion rate, model F1 improvement, dispute resolution time
+**Validation phase:**
+- Review user disputes and flagged obligations
+  - Categorize issues: annotation error, missing context, correct but low confidence
+  - Adjudicate: domain experts review and resolve
+- Retrain ML models based on validated corrections
+  - Collect validated + corrected obligations into new training dataset
+  - Re-train deontic classifier, concept grounding, grammar matcher
+  - Measure accuracy improvement
+  - Stage new version; measure performance in production
+  - Promote if accuracy improved
 
-**Week 5–12 (Expansion to NSFR):**
-- Second regulation: Net Stable Funding Ratio (NSFR, ~1,500 obligations)
-  - Justification: NSFR complements LCR; many banks track both; users requested parallel coverage
-  - Timeline: Weeks 5–8 to Layers 1–4 complete; Weeks 9–12 to Layers 5–7
-- Annotation effort: 6,000 new sentences (2× LCR size)
-  - Recruiting: 3 annotators, 6 weeks in parallel = 3 wall-clock weeks
-  - Cost: ~$250k (similar to LCR annotation)
-- Ontology expansion: LCR ontology ~200 concepts; NSFR adds ~150 new concepts (funding, maturity buckets, stable funding categories)
-  - Mapping process: 1 week domain expert work to align NSFR concepts to LCR where applicable
-  - Expected overlaps: 40% of NSFR concepts are refinements of LCR concepts (e.g., "retail deposit" → "stable retail deposit", "retail deposits without term")
-- Tension detection: identify 20–30 new tensions between LCR and NSFR (e.g., maturity bucketing differences, definition divergence)
+**Expansion to additional regulations:**
+- Identify next regulation to extract (based on user demand, regulatory priority)
+- Repeat Layers 1–4 pipeline for new regulation
+  - Estimate effort based on MVP experience
+- Extend ontology with new concepts from additional regulation
+  - Map new concepts to existing ontology where applicable
+  - Identify new tensions with previously extracted regulations
+- Add Layers 5–7 for expanded regulation set
 
-**Week 13–24 (Expansion to ALMM + Layers 5–7):**
-- Third regulation: Additional Liquidity Monitoring Metrics (ALMM, ~900 obligations)
-- Add Layer 5 (Computational): extract 50+ formulas from LCR + NSFR + ALMM
-  - Examples: liquidity coverage ratio calculation, stable funding calculation, concentration metrics
-  - Time: 2 weeks parsing + 1 week validation
-- Add Layer 6 (Field): bind 40,000 COREP cells to obligations
-  - 30% automatic matching (semantic), 70% manual validation
-  - Cost: ~$30k for domain expert validation
-- Add Layer 7 (Cross-Regulation): full ontology alignment across LCR + NSFR + ALMM
-  - Expected conflicts: 50–100 (threshold mismatches, definition divergences, reporting overlaps)
-  - Validation: domain experts review each conflict; mark as "resolved" or "escalated to legal"
+**Quality improvement:**
+- Retrain ML models incorporating feedback from wider regulatory coverage
+- Measure validation rates and dispute patterns
+- Monitor inter-annotator agreement metrics
+- Identify common failure modes and refine extraction rules
 
-**Week 25–36 (Quality & Scale):**
-- Model retraining cycle 2: incorporate all Layers 1–7 feedback
-  - Expect F1 improvement: +3–5% from v1 baseline
-- Add jurisdictional variants: Peru SBS, Panama SBN, Brazil BCB
-  - Each adds 50–150 obligations (aligned to EU baseline via Layer 7 framework)
-  - Cost: <$50k per jurisdiction (mostly alignment, not new extraction)
-- Full quality metrics by Week 28: 85%+ validation rate, <5% dispute rate, inter-annotator agreement >0.80
+**Layers 8–11 operationalization:**
+- Implement temporal layer: point-in-time queries, amendment tracking
+- Complete provenance layer: authority level tagging, confidence scoring
+- Validate generative layer: grammar rules on full obligation corpus
+- Operationalize quality layer: continuous retraining, dispute resolution
 
-**Week 37–52 (Layers 8–11 Polish):**
-- Layer 8 (Temporal): operationalize point-in-time queries
-  - CRR I → CRR II → CRR III amendment tracking
-  - Trace impact of each amendment on obligation set (which obligations changed? added? removed?)
-- Layer 9 (Provenance): finalize authority level tagging
-  - Audit all obligations for source tier accuracy
-- Layer 10 (Generative): validate grammar rules on expanded corpus (3,600+ obligations)
-  - Completeness validation: identify any obligations that don't match grammar (likely <5%)
-  - Impact projection: for proposed CRR IV, estimate obligation count (should predict 1,200 ± 10%)
-- Layer 11 (Quality): operationalize continuous retraining
-  - Monthly retrain cycle: fetch validated data from prior month, retrain, measure accuracy, auto-promote if improved
-
-**Ongoing (Post Week 52):**
-- **Amendment monitoring:** When CRR IV published, automatically ingest + extract obligations
-  - New regulation processing: Weeks 1–3 for Layers 1–4; Weeks 4–6 for Layers 5–7
-  - Projected timeline: 6 weeks per new major regulation
-  - Cost: ~$100k per regulation (reuse existing models, annotation for new concepts only)
-- **Continuous retraining:** Monthly cycle triggered by validation_metadata growth
-  - Data: all validated obligations from prior month
-  - Training: 4 GPU-hours per model
-  - Rollout: A/B test, auto-promote if F1 improves >1%
-- **Dashboard monitoring:**
-  - Validation rate: target >85%, alert if drops below 75%
-  - Dispute rate: target <5%, alert if rises above 10%
-  - Model F1: target trend upward, alert if any model F1 drops >2%
-  - API latency: p95 <500ms; alert if exceeds 1000ms
-- **User feedback loop:**
-  - Monthly stakeholder calls: review quality metrics, gather feedback on obligation accuracy, request new regulations
-  - Quarterly: retrain models on user-validated corrections
-- **Regulatory source monitoring:**
-  - Scraper health dashboard: track EUR-Lex ingestion, detect broken APIs
-  - When new version of regulation published: auto-ingest, tag as "new version available", notify users to review amendments
+**Ongoing operations:**
+- Amendment monitoring: when regulations change, ingest and extract new/updated obligations
+- Continuous retraining: periodic model updates as new validated data accumulates
+- Dashboard monitoring: track validation rates, dispute patterns, model accuracy trends
+- User feedback loop: gather feedback on obligation accuracy, request new regulations
+- Regulatory source monitoring: ensure scrapers are functioning, handle API changes
 
 ---
 
@@ -994,20 +923,20 @@ models/
 
 4. **Interactive and responsive:**
    - Search finds obligations by meaning (not just text matching)
-   - Graph renders in <3 seconds, supports zoom/pan/drag
-   - Filters update results instantly
+   - Graph visualization supports zoom/pan/drag interactions
+   - Filters update results responsively
    - Scope control (jurisdiction + regulation + date) works seamlessly
 
 5. **Continuously improving:**
-   - Validation rate >80%
-   - Dispute resolution workflow in use
-   - ML models being retrained on validated data
+   - High validation rate (majority of obligations validated)
+   - Dispute resolution workflow in active use
+   - ML models retrained on validated data
    - Quality dashboard shows improvement over time
 
 6. **Ready for scale:**
-   - System handles 10,000+ obligations without slowdown
-   - Can ingest new regulations and extract obligations within days
+   - System performs acceptably with large obligation sets
+   - Can ingest new regulations and extract obligations efficiently
    - Ontology extensible to new concepts
-   - Field bindings cover any reporting template
+   - Field bindings applicable to new reporting templates
 
 When all 6 are true, the prototype becomes a product.

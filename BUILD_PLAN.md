@@ -33,36 +33,31 @@ Blocking dependency: Layer 7 cannot start until Layers 3, 4, 6 are complete
 
 Complete **Layers 1–4 for one regulation (LCR) only**:
 
-- Parsed structural tree (200+ nodes for LCR)
-- Annotated deontic corpus (10,000 LCR sentences)
-- ~1,200 extracted LCR obligations
-- Ontology of 200 concepts specific to LCR
-- Graph schema working, queryable
-- Success metric: obligations extracted with 80%+ accuracy, inter-annotator agreement ≥0.75
+- Parsed structural tree (200+ addressable nodes)
+- Annotated deontic corpus with inter-annotator agreement validation
+- Extracted obligations with 80%+ accuracy
+- Ontology of concepts specific to the regulation
+- Graph schema operational and queryable
+- Success metric: obligations extracted with validated accuracy, inter-annotator agreement ≥0.75
 
-**Timeline:** 16 weeks  
-**Team:** 3 FTE (1 parser engineer, 1 ML engineer, 1 domain expert)  
-**Deliverable:** Proof that the approach works; ready to scale to multiple regulations
+**Team requirement:** Parser engineer, ML engineer, domain expert  
+**Deliverable:** Proof that the approach works; ready to scale to additional regulations
 
 ### Scale-Out: Additional Regulations (Layers 1–7)
 
 Once MVP proven, expand to full regulatory coverage:
-- Add NSFR (~1,500 obligations), ALMM (~900 obligations) via Layers 1–4 (repeat pipeline)
-- Add Layer 5 (Computational): 50+ formulas across all regulations
-- Add Layer 6 (Field): bind 40,000+ COREP reporting cells to obligations
+- Add additional EU regulations (NSFR, ALMM) via Layers 1–4 (repeat pipeline for each)
+- Add Layer 5 (Computational): extract formulas across all regulations
+- Add Layer 6 (Field): bind reporting fields to obligations
 - Add Layer 7 (Cross-Regulation): align concepts, detect tensions across regulations
-- Add regional variants: Peru SBS, Panama SBN, Brazil BCB (50–150 obligations each)
-
-**Scale-out timeline:** Additional 36 weeks  
-**Total system completion:** 52 weeks to full production system
+- Add regional variants as applicable
 
 **Full system scope (at completion):**
-- 3 primary EU regulations (LCR, NSFR, ALMM) = ~3,600 obligations
-- Plus regional variants = 3,600–3,900 total obligations
+- Multiple primary EU regulations
 - 1,000+ concepts in unified ontology
-- 40,000+ reporting fields bound to obligations
-- 50–100+ tensions detected and validated
-- 4–6+ regulations parsed and indexed
+- 40,000+ reporting fields mapped to obligations
+- Tensions detected and validated
+- Multiple regulations parsed and indexed
 
 ---
 
@@ -76,17 +71,17 @@ Input: XML from EUR-Lex containing CRR regulations
 Output: Addressable tree with 200+ nodes (LCR case)
 
 **Parser development:**
-- Weeks 1–2: Analyze EUR-Lex XML structure; design canonical schema
-- Weeks 3–4: Implement parser; test on LCR XML
-- Week 5: Validate structural tree; resolve parsing errors
+- Analyze EUR-Lex XML structure; design canonical schema
+- Implement parser; test on source regulation
+- Validate structural tree; resolve parsing errors
 
 **Cross-reference extraction:**
-- Weeks 5–6: Scan for explicit citations ("as referred to in Article X")
+- Scan for explicit citations ("as referred to in Article X")
 - Create typed edges: cites, amends, derogates_from
 
 **Amendment tracking:**
-- Week 7: Identify CRR I → CRR II → CRR III amendments
-- Week 8: Model amendment deltas as insert/delete/replace operations
+- Identify amendment chain (base regulation → amendments)
+- Model amendment deltas as insert/delete/replace operations
 
 ### Graph Schema (Neo4j)
 
@@ -150,20 +145,20 @@ Output: Token stream per sentence with POS, NER, lemma tags + multilingual align
 
 **Process:**
 
-Weeks 1–2: Set up spaCy + Stanza pipelines
-- Install pre-trained models for English, French, German, Spanish
-- Test on sample LCR sentences
+Setup: Set up spaCy + Stanza pipelines
+- Install pre-trained models for required languages
+- Test on sample sentences from the regulation
 
-Weeks 3–4: NER fine-tuning
-- Collect regulatory entities: "credit institution", "maturity bucket", "haircut", "Level 2A asset"
-- Annotate 500 sentences with entities
-- Fine-tune transformer-based NER model (e.g., spaCy's transformer extension)
-- Evaluate: precision, recall, F1 on test set
+NER fine-tuning:
+- Collect regulatory entities from the regulation
+- Annotate sample sentences with entities
+- Fine-tune transformer-based NER model
+- Evaluate precision, recall, F1 on test set
 
-Weeks 5–6: Multilingual alignment
-- For each English sentence, find equivalent sentences in French, German, Spanish (from EUR-Lex parallel texts)
-- Align at phrase level using embeddings (multilingual BERT, LaBSE)
-- Create concept ID mappings: English "retail deposit" → concept_001 ← French "dépôt de détail" ← German "Retaileinlage"
+Multilingual alignment:
+- For each sentence in source language, find equivalents in target languages
+- Align at phrase level using embeddings
+- Create concept ID mappings across languages
 
 ### Graph Schema (Neo4j)
 
@@ -194,33 +189,16 @@ Properties:
 
 **NER Fine-Tuning Strategy:**
 
-Base model: `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` (multilingual, fast, reasonable quality)
-
-Alternatives considered:
-- `xlm-roberta-base`: larger, more accurate, slower inference
-- `mBERT`: older, less accurate
-- Decision: MiniLM for MVP; upgrade to xlm-roberta if accuracy insufficient
-
-**Training data:** 500 annotated LCR sentences (see Layer 3 annotation effort)
-
-**Fine-tuning process:**
-- Use spaCy's transformer extension (`spacy-transformers`)
-- Train on 500 sentences: 400 train, 50 validation, 50 test
-- Evaluate: precision, recall, F1 per entity type
-- Target: 85%+ F1 on test set
+- Select multilingual transformer base model
+- Fine-tune on annotated regulatory sentences
+- Evaluate precision, recall, F1 per entity type
+- Target: high F1 on test set (>85%)
 
 **Multilingual alignment:**
-- Use LaBSE embeddings (multilingual sentence embeddings)
-- For each English sentence, find closest matches in French/German/Spanish using cosine similarity
-- Threshold: >0.85 similarity
-- Manual validation: domain expert reviews 100 alignments to check accuracy
-- Target: 90%+ alignment accuracy
-
-**Inference cost:**
-- Tokenization: ~10ms per sentence
-- NER: ~50ms per sentence  
-- Embedding: ~20ms per sentence
-- Total: ~80ms per sentence; 10,000 sentences = ~13 minutes
+- Use multilingual embeddings for semantic alignment
+- Find closest matches in target languages using similarity scoring
+- Manual validation: domain expert reviews sample alignments to verify accuracy
+- Target: High alignment accuracy across all language pairs
 
 ### Failure Modes & Escalation
 
@@ -234,9 +212,9 @@ Alternatives considered:
 
 ## Layer 3: Deontic / Modal Layer – Detailed Plan
 
-### Annotation Sourcing & Costs
+### Annotation Sourcing
 
-**Task:** Hand-label 10,000 LCR sentences with deontic type + structure
+**Task:** Hand-label sentences with deontic type and structure
 
 **Annotation schema:**
 
@@ -255,32 +233,18 @@ Required qualifications:
 - Legal background (law degree, bar admission, or equivalent)
 - Financial regulation experience (banking, compliance, or similar)
 - Fluent English
-- Ability to commit 4 weeks (part-time)
 
 **Recruitment:**
-- LinkedIn: search "financial compliance + lawyer"
-- Compliance recruiting firms
-- University law schools (offer stipend to post-grads)
-- Estimated cost: $80–100/hour
-
-**Annotator pool:**
-- 3 full-time equivalents × 10,000 sentences ÷ 250 sentences/annotator/week = 40 annotator-weeks
-- Split across 3 annotators: each does 3,333 sentences
-- 3 × 3,333 ÷ 250 per week = 40 weeks of annotator effort
-- Run in parallel: 3 annotators × 4 weeks = 4 wall-clock weeks
-
-**Cost:**
-- 3 annotators × 40 weeks × $90/hour × 40 hours/week = $432,000
-- Plus Prodigy license ($5,000 for 4 weeks)
-- **Total annotation cost: ~$437,000**
+- LinkedIn, compliance recruiting firms, law schools
+- Multiple annotators (3 recommended for inter-annotator agreement validation)
 
 **Inter-annotator agreement (Cohen's Kappa):**
-- Extract 500 random sentences for dual-annotation (all 3 annotators)
-- Measure agreement:
-  - Deontic type: target 0.75+ Kappa
-  - Subject/action/object spans: target 0.70+ Kappa (more subjective)
-  - Temporal extraction: target 0.80+ Kappa (more objective)
-- If agreement <0.70, refine guidelines and re-annotate
+- Extract random subset for dual-annotation across all annotators
+- Measure agreement by annotation type:
+  - Deontic type: target high agreement (>0.75)
+  - Subject/action/object spans: target acceptable agreement (>0.70)
+  - Temporal extraction: target high agreement (>0.80)
+- If agreement low, refine guidelines and re-annotate
 
 ### Annotation Tooling
 
@@ -305,43 +269,18 @@ Required qualifications:
 Task 1: Classify deontic type (8-class classification)
 Task 2: Extract spans (subject, action, object, condition, temporal) using sequence labeling
 
-**Base model:** Fine-tuned `distilbert-base-uncased` (fast, reasonable accuracy)
-
-Alternative: `legal-bert` or regulatory-domain-specific BERT if available
-
-**Architecture:**
-```
-Input: [CLS] sentence tokens [SEP]
-├─ BERT encoder
-├─ Task 1: Deontic classification head (8-class softmax)
-└─ Task 2: Span extraction head (sequence labeling, BIO tagging)
-
-Output:
-- Deontic type: probability over 8 classes
-- Token-level BIO tags: B-SUBJECT, I-SUBJECT, B-ACTION, I-ACTION, etc.
-```
-
-**Training data:**
-- 400 sentences train (from 500 dual-annotated)
-- 50 sentences validation
-- 50 sentences test
-- Data augmentation: paraphrase each sentence using T5 (generate 2 paraphrases per sentence)
-- Augmented train set: 1,200 sentences
+**Base model:** Transformer-based model (BERT-family or regulatory-domain-specific variant)
 
 **Training:**
-- Optimizer: AdamW, learning rate 2e-5
-- Batch size: 16
-- Epochs: 3
-- Loss: weighted multi-task loss (0.5 × classification loss + 0.5 × span loss)
+- Train/validation/test split on annotated data
+- Data augmentation to increase training set size
+- Multi-task loss combining classification and span extraction
+- Optimization via standard deep learning practices
 
 **Evaluation metrics:**
-- Classification: accuracy, precision, recall, F1 per class
+- Classification: accuracy, precision, recall, F1 per deontic type
 - Span extraction: token-level F1, span-level F1
-- Target: 80%+ F1 on test set for both tasks
-
-**Inference cost:**
-- Per sentence: ~20ms
-- 10,000 sentences: ~3.3 minutes
+- Target: High F1 on test set for both tasks (>80%)
 
 ### Failure Modes & Escalation
 
@@ -635,104 +574,76 @@ THEN conflict_type = "temporal_conflict", severity = "medium"
 
 ---
 
-## Critical Path & Critical Decisions
+## Critical Path & Decision Points
 
-### Critical Path (Layers 1–4 MVP)
+### Execution Order (Layers 1–4 MVP)
 
-```
-Week 1:    Layer 1 design + Layer 2 setup (parallel)
-Weeks 2–5: Layer 1 parsing complete
-Weeks 1–6: Layer 2 NER fine-tuning (parallel)
-Weeks 1–4: Annotation schema design + Prodigy setup (parallel)
-Weeks 5–8: Layer 3 annotation (10,000 sentences, 3 annotators in parallel)
-Week 8:    Layer 3 agreement measurement
-Weeks 9–12: Layer 3 ML model training + Layer 4 ontology design (parallel)
-Weeks 13–16: Layer 4 ontology population + validation
+Sequential path:
+1. Layer 1 (Structural) — Parse regulation and extract cross-references
+2. Layer 2 (Linguistic) — Tokenize and align text across languages
+3. Layer 3 (Deontic) — Annotate and classify obligation types
+4. Layer 4 (Semantic) — Extract concepts and build ontology
 
-Gate at Week 8: Is inter-annotator agreement ≥0.75? If no, refine schema & re-annotate 1,000 sentences (add 2 weeks).
+Parallel tracks:
+- Layer 1 and Layer 2 setup can run in parallel
+- Layer 3 annotation and Layer 4 ontology design can overlap
 
-Gate at Week 12: Does Layer 3 model achieve 80%+ F1? If no, retrain with larger model or more data (add 2 weeks).
+### Critical Checkpoints
 
-Gate at Week 16: Does ontology capture LCR semantics? If no, iterate (add 1 week).
+1. **Base models for NER and deontic classification**
+   - Decision: Select transformer variant based on accuracy vs. speed tradeoffs
+   - Trade-off: Model complexity affects training time and inference speed
 
-Earliest MVP delivery: Week 16 (if all gates pass)
-Worst case (gates fail): Week 21
-```
+2. **Annotation platform**
+   - Decision: Choose annotation tool (Prodigy, Label Studio, or custom)
+   - Consideration: Must support span-level annotation and inter-annotator agreement tracking
 
-### Critical Decisions (Make by Week 1)
+3. **Graph database technology**
+   - Decision: Choose graph store for ontology (Neo4j, ArangoDB, or hybrid)
+   - Consideration: Must support rich relationship types and complex queries
 
-1. **Base models:** Which BERT variant for deontic classification and NER?
-   - Decision: distilbert (fast, reasonable) vs. roberta (slower, better) vs. legal-bert (if available)
-   - Timeline impact: switching models mid-training costs 1 week
-
-2. **Annotation platform:** Prodigy vs. Label Studio vs. custom UI?
-   - Decision: Prodigy (cost $5k, mature, reliable)
-   - Timeline impact: setup is 1 week
-
-3. **Graph database:** Neo4j vs. ArangoDB vs. PostgreSQL with JSON?
-   - Decision: Neo4j (mature, Cypher query language, good for ontology)
-   - Timeline impact: schema design, driver setup (1 week)
-
-4. **Annotation sourcing:** Hire externally vs. use internal staff vs. crowdsource?
-   - Decision: Hire 3 external regulatory experts (fastest for MVP, higher cost)
-   - Timeline impact: recruitment 1 week, onboarding 1 week
+4. **Annotation team sourcing**
+   - Decision: Internal vs. external annotators vs. hybrid
+   - Consideration: External hiring requires domain expertise in financial regulation
 
 ---
 
-## Costs & Resources
+## Resources Required
 
-### MVP (Layers 1–4, one regulation, 16 weeks)
+**MVP (Layers 1–4 for one regulation):**
+- Parser engineer (structural extraction, XML, cross-references)
+- ML engineer (NER fine-tuning, deontic classifier, concept grounding)
+- Domain expert (annotation oversight, ontology validation)
+- Annotation team (multiple annotators for inter-annotator agreement)
+- Annotation platform (Prodigy or equivalent)
+- GPU compute for model training
 
-| Category | Cost | Notes |
-|----------|------|-------|
-| Parser Engineer (1 FTE, 16 weeks) | $80,000 | Structural parsing, XML, cross-reference extraction |
-| ML Engineer (1 FTE, 16 weeks) | $100,000 | NER fine-tuning, deontic classifier, grounding |
-| Domain Expert (1 FTE, 16 weeks) | $60,000 | Annotation oversight, ontology validation |
-| Annotators (3 FTE, 4 weeks) | $437,000 | Deontic annotation (10,000 sentences) |
-| Prodigy License | $5,000 | 4-week license |
-| GPU compute (training) | $5,000 | ~200 GPU hours for fine-tuning |
-| **Total** | **$687,000** | |
-
-### Scale-Out (Layers 1–7, 3 regulations, additional 24 weeks)
-
-| Category | Cost | Notes |
-|----------|------|-------|
-| Parser Engineer (additional parsers for NSFR, ALMM) | $60,000 | ~2 weeks per regulation |
-| ML Engineer (continue) | $75,000 | Scale extraction, add Layer 5–7 |
-| Domain Experts (2 FTE) | $90,000 | Ontology alignment, conflict validation |
-| Annotators (NSFR: 3 FTE, 4 weeks; ALMM: 2 FTE, 3 weeks) | $250,000 | |
-| EBA DPM ingestion (semi-automatic) | $30,000 | Layer 6 field wiring |
-| Infrastructure (Neo4j, cloud, GPU) | $20,000 | Scale databases |
-| **Total** | **$525,000** | |
-
-### Full Lifecycle (Layers 1–11 + platform) 
-
-| Phase | Cost | Timeline |
-|-------|------|----------|
-| MVP (1 regulation) | $687,000 | 16 weeks |
-| Scale-out (3 regulations) | $525,000 | 24 weeks |
-| Layers 8–11 + Platform | $300,000 | 12 weeks |
-| **Total** | **$1,512,000** | 52 weeks (12 months) |
+**Scale-Out (Layers 1–7 for multiple regulations):**
+- Additional parsing effort for each new regulation
+- ML engineering to scale extraction pipeline
+- Domain experts for ontology alignment and tension validation
+- Annotation teams for each new regulation
+- Infrastructure scaling (Neo4j, databases, compute)
 
 ---
 
-## Failure Mode Reference
+## Failure Modes & Mitigation
 
-### Across All Layers
+### Potential Issues Across All Layers
 
-| Layer | Failure | P(fail) | Recovery | Impact |
-|-------|---------|---------|----------|--------|
-| 1 | Parser crashes on malformed XML | 10% | Fall back to PDF; manual extraction | +1 week per regulation |
-| 2 | NER F1 <80% | 20% | Larger base model; more training data | +2 weeks |
-| 3 | Annotator agreement <0.75 | 30% | Refine schema; re-annotate subset | +2 weeks |
-| 3 | Model F1 <75% | 20% | Larger model; data augmentation; rule-based hybrid | +2 weeks |
-| 4 | Concept extraction incomplete | 15% | Manual ontology curation | +1 week |
-| 5 | Formula parsing fails on complex rules | 25% | Hybrid rule-based + manual | +1 week |
-| 6 | Field-obligation linking <85% | 40% | Manual review; retrain; lower confidence threshold | +2 weeks |
-| 7 | Concept alignment disagreement | 35% | Multiple domain experts; voting; escalation | +1 week |
-| 7 | Conflict detection false positives | 50% | Stricter heuristics; manual review; lower threshold | +1 week |
+| Layer | Failure Mode | Recovery Strategy |
+|-------|---------|----------|
+| 1 | Parser crashes on malformed source documents | Fall back to manual extraction from PDF |
+| 2 | NER model underperforms on regulatory text | Larger base model or more training data |
+| 3 | Annotator agreement too low | Refine schema; provide more examples; re-annotate |
+| 3 | ML model F1 insufficient | Larger model, more training data, hybrid rule-based approach |
+| 4 | Concept extraction incomplete | Manual ontology curation by domain experts |
+| 5 | Complex formulas unparseable | Hybrid rule-based + manual review |
+| 6 | Field-obligation linking accuracy too low | Manual review sample; retrain ranker |
+| 7 | Concept alignment disagreement | Multiple domain experts review; escalate to legal |
+| 7 | Conflict detection has false positives | Stricter heuristics; manual validation |
 
-**Mitigation strategy:** Build 3-week buffer into timeline
+**Mitigation approach:** Design pipeline with checkpoints to detect issues early; plan for iteration and refinement at each stage
 
 ---
 
@@ -767,45 +678,64 @@ At Week 52, the system is production-ready if:
 
 ---
 
-## Post-MVP: Operational Plan (Weeks 17–40)
+## Post-MVP: Scale-Out Plan
 
-**Weeks 17–24:** Add NSFR + ALMM
+After MVP validation (Layers 1–4 for one regulation):
 
-**Weeks 25–32:** Add Layer 5 (computational) + Layer 6 (field)
+**Phase 1:** Add additional regulations
+- Repeat Layers 1–4 pipeline for each new regulation
+- Annotation and extraction effort scales linearly
 
-**Weeks 33–40:** Add Layer 7 (cross-regulation) + basic API + dashboard integration
+**Phase 2:** Add computational and field binding (Layers 5–6)
+- Extract formulas and parameters from all regulations
+- Map reporting fields to obligations
 
-**Weeks 41–52 (separate effort):** Layers 8–11 + full platform
+**Phase 3:** Cross-regulation reasoning (Layer 7)
+- Align concepts across regulations
+- Detect and validate tensions
+
+**Phase 4 (separate effort):** Infrastructure layers (Layers 8–11) and platform
+- Temporal versioning and amendment tracking
+- Provenance and authority level tagging
+- Generative grammar and completeness validation
+- Quality tracking and continuous improvement
 
 ---
 
 ## Checkpoints & Go/No-Go Gates
 
-| Checkpoint | Criterion | Go | No-Go Action |
-|------------|-----------|----|----|
-| Week 4 | Layer 1 parser tested on sample | <5% parse errors | Fix parser, retest |
-| Week 8 | Layer 3 annotation agreement | κ ≥ 0.75 | Refine schema, re-annotate |
-| Week 12 | Layer 3 model performance | F1 ≥ 0.80 | Retrain, try larger model |
-| Week 16 | Layer 4 ontology complete | Queries work, 85%+ accuracy | Curation iteration |
-| Week 20 (Scale) | NSFR/ALMM parsing complete | <10% parse errors across regulations | Fix parsing issues |
-| Week 28 (Scale) | Field-obligation linking | Confidence ≥0.80 for 85%+ of fields | Manual review pass 2 |
-| Week 36 (Scale) | Tension detection | P ≥0.80, R ≥0.75 on conflict detection | Retrain heuristics |
+| Phase | Criterion | Go | No-Go Action |
+|-------|-----------|----|----|
+| Layer 1 | Parser tested on sample | Low parse error rate | Fix parser, retest |
+| Layer 3 | Annotation agreement | κ ≥ 0.75 | Refine schema, re-annotate |
+| Layer 3 | ML model performance | F1 ≥ 0.80 | Retrain, try larger model |
+| Layer 4 | Ontology complete | Queries work, high accuracy | Curation iteration |
+| Scale: Multiple regulations | Parsing across regulations | Acceptable error rate | Fix parsing issues |
+| Layer 6 | Field-obligation linking | High confidence matching | Manual review |
+| Layer 7 | Tension detection | High precision and recall | Refine detection rules |
 
 ---
 
 ## Summary
 
-This is an operational plan. It specifies:
+This is an architecture and approach plan. It specifies:
 
-✅ Sequencing (dependencies, critical path, critical decisions)  
-✅ ML methodology (base models, fine-tuning, evaluation metrics, costs)  
-✅ Annotation sourcing (how many annotators, cost, timeline, tools)  
+✅ Sequencing (dependencies, critical path, decision points)  
+✅ ML methodology (approach, evaluation metrics, base models to consider)  
+✅ Annotation sourcing (qualifications needed, team structure, inter-annotator agreement)  
 ✅ Graph schema (Neo4j node/relationship types, properties, queries)  
-✅ Failure modes (what can go wrong, impact, mitigation, escalation)  
-✅ Costs & resources (per phase, total)  
-✅ Success metrics (go/no-go gates)  
+✅ Failure modes (what can go wrong, mitigation strategies)  
+✅ Success metrics (go/no-go criteria for advancing to next phase)  
 
-**MVP delivery: Week 16 (or Week 21 if gates fail)**  
-**Full system: Week 52 (or later if scaling gates fail)**
+The plan describes:
+- What needs to be built at each layer
+- How to validate that it works
+- What can fail and how to recover
+- When to advance to the next phase
 
-The plan is executable. Pick a start date, assemble the team, and execute against the gates.
+**What is NOT in this plan:**
+- Specific timelines (those depend on team experience, data quality, tool maturity)
+- Cost estimates (those depend on labor market, chosen vendors, infrastructure)
+- Detailed resource allocation (that's a separate planning exercise with actual budget)
+
+The next step is to validate the approach with one regulation, measure actual execution time and effort, then use that data to plan the full rollout.
