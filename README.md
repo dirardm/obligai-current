@@ -6,7 +6,14 @@ A modern, interactive platform for exploring, tracking, and managing regulatory 
 
 ## What is ObligaI?
 
-ObligaI is a comprehensive regulatory compliance intelligence application designed for financial institutions and compliance professionals. It provides:
+**ObligaI** is a comprehensive regulatory compliance intelligence platform designed for financial institutions and compliance professionals to understand, track, and manage obligations across multiple jurisdictions and regulatory frameworks.
+
+**This repository contains:**
+- The web application (Next.js 16 + React 19)
+- Complete design system documentation (see `design/`)
+- Development guidelines and architecture notes
+
+The application provides:
 
 - **Obligation Registry** — a searchable, sortable database of 432+ regulatory obligations across 20+ regulations and 18+ jurisdictions
 - **Regulatory Sources** — automated scraper monitoring for regulatory document changes across 8+ regulatory bodies
@@ -49,11 +56,12 @@ ObligaI is a comprehensive regulatory compliance intelligence application design
 - **TypeScript 5** — strict type checking across all components
 
 ### Styling
-- **ObligaI Design System** — canonical token stylesheet + extended component library
-  - `colors_and_type.css` — designer-maintained, read-only
-  - `ObligaI_Extended_Stylesheet.css` — semantic components, regulations registry, responsive grid
+- **ObligaI Design System** (see `design/README.md`) — canonical token stylesheet + extended component library
+  - `web/src/styles/colors_and_type.css` — designer-maintained, read-only
+  - `web/src/styles/ObligaI_Extended_Stylesheet.css` — semantic components, regulations registry, responsive grid
 - **CSS Variables** — mode-invariant sienna accent, jurisdiction-aware theming
 - **Light/Dark Themes** — via `data-theme` attribute
+- **Design Documentation** — See `design/` folder for complete design system reference
 
 ### Assets
 - **@fontsource/inter** — primary typeface (400, 500, 700)
@@ -74,40 +82,56 @@ ObligaI is a comprehensive regulatory compliance intelligence application design
 
 ```
 obligai-current/
-├── web/                           # Next.js application
+├── design/                         # Design system documentation
+│   ├── README.md                   # Design system overview
+│   ├── DESIGN_SYSTEM.md            # Complete specification
+│   ├── STRUCTURE.md                # Stylesheet organization
+│   └── Stylesheet Reference.html   # Interactive component reference
+├── web/                            # Next.js application
 │   ├── src/
 │   │   ├── app/
-│   │   │   ├── layout.tsx         # Root layout with theme + stylesheets
-│   │   │   ├── page.tsx           # Home/dashboard redirect
+│   │   │   ├── layout.tsx          # Root layout with theme + stylesheets
+│   │   │   ├── page.tsx            # Home/dashboard redirect
 │   │   │   └── (app)/
-│   │   │       ├── layout.tsx     # AppShell + navigation
-│   │   │       ├── page.tsx       # Dashboard
-│   │   │       ├── register/      # Obligation registry
-│   │   │       ├── sources/       # Document scrapers
-│   │   │       ├── conflicts/     # Conflict detection graph
-│   │   │       ├── reports/       # Report generation
-│   │   │       └── settings/      # User settings
+│   │   │       ├── layout.tsx      # AppShell + navigation
+│   │   │       ├── page.tsx        # Dashboard
+│   │   │       ├── register/       # Obligation registry
+│   │   │       ├── sources/        # Document scrapers
+│   │   │       ├── conflicts/      # Conflict detection graph
+│   │   │       ├── reports/        # Report generation
+│   │   │       └── settings/       # User settings
 │   │   ├── components/
-│   │   │   ├── ui/                # Primitive components (Button, Input, etc.)
-│   │   │   ├── layout/            # Layout components (Sidebar, TopBar, AppShell)
-│   │   │   └── product/           # Feature components (Dashboard, Register, etc.)
+│   │   │   ├── ui/                 # Primitive components (Button, Input, etc.)
+│   │   │   ├── layout/             # Layout components (Sidebar, TopBar, AppShell)
+│   │   │   └── product/            # Feature components (Dashboard, Register, etc.)
 │   │   ├── data/
-│   │   │   ├── registry.ts        # 20 regulations, 18 jurisdictions
-│   │   │   └── obligations.ts     # 432 mock obligations
+│   │   │   ├── registry.ts         # 20 regulations, 18 jurisdictions
+│   │   │   └── obligations.ts      # 432 mock obligations
 │   │   ├── store/
-│   │   │   ├── theme.ts           # Zustand theme store
-│   │   │   └── scope.ts           # Zustand scope store
+│   │   │   ├── theme.ts            # Zustand theme store
+│   │   │   └── scope.ts            # Zustand scope store
 │   │   └── styles/
-│   │       ├── colors_and_type.css
+│   │       ├── colors_and_type.css (reference: design/)
 │   │       └── ObligaI_Extended_Stylesheet.css
-│   ├── public/assets/             # SVG logos, icons, flags
+│   ├── public/assets/              # SVG logos, icons, flags
 │   └── package.json
-├── README.md                       # This file
-├── DESCRIPTION.md                  # Full feature + architecture description
-├── CLAUDE.md                       # AI development guidelines
-├── STATE.md                        # Current state snapshot
-└── progress.md                     # Build checkpoint history
+├── README.md                        # App overview (this file)
+├── DESCRIPTION.md                   # Full feature + architecture description
+├── CLAUDE.md                        # AI development guidelines
+├── STATE.md                         # Current state snapshot
+└── progress.md                      # Build checkpoint history
 ```
+
+---
+
+## Design System
+
+The complete design system documentation lives in the `design/` folder:
+- **`design/README.md`** — Overview and quick start
+- **`design/DESIGN_SYSTEM.md`** — Complete token and component specifications
+- **`design/Stylesheet Reference.html`** — Interactive component gallery (open in browser)
+
+The actual stylesheets are in `web/src/styles/` and are never modified directly—only extended.
 
 ---
 
