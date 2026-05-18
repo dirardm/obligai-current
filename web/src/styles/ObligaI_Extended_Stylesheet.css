@@ -2855,7 +2855,4 @@ a:not([class]) {
   align-self: center;
 }
 
-/* Force table to honour colgroup widths instead of auto-layout */
-.table { table-layout: fixed; }
-.table th, .table td { overflow: hidden; }
 /* End of ObligaI_Extended_Stylesheet.css ===================== */
