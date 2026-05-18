@@ -170,5 +170,11 @@
       <rect y="13.33" width="24" height="2.67" fill="#A51931"></rect>
     </symbol>
 
+    <symbol id="flag-co" viewBox="0 0 24 16">
+      <rect width="24" height="8" fill="#FCD116"/>
+      <rect y="8" width="24" height="4" fill="#003893"/>
+      <rect y="12" width="24" height="4" fill="#CE1126"/>
+    </symbol>
+
   </defs>
 </svg>
