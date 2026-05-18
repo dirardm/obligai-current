@@ -2825,25 +2825,25 @@ a:not([class]) {
 
 /* Dashboard stat cards — compact variant */
 .card--stat-compact {
-  padding: var(--space-4) var(--space-6);
+  padding: var(--space-2) var(--space-3);
   display: flex;
   flex-direction: column;
   justify-content: center;
   min-height: 0;
 }
 .card--stat-compact .stat-num {
-  font: 700 36px/1 var(--font-sans);
+  font: 700 22px/1 var(--font-sans);
   letter-spacing: -0.5px;
   color: var(--accent);
   font-variant-numeric: tabular-nums;
   margin: 0;
 }
 .card--stat-compact .stat-label {
-  font: 700 9px/1 var(--font-sans);
+  font: 700 8px/1 var(--font-sans);
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--text-muted);
-  margin-top: var(--space-2);
+  margin-top: var(--space-1);
 }
 
 /* Force table to honour colgroup widths instead of auto-layout */
