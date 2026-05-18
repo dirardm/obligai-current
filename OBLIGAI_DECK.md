@@ -142,7 +142,7 @@ Regulatory conflicts are inevitable when you operate across multiple jurisdictio
 Large screenshot of the Conflicts page showing: a circular force-directed graph with 8–12 nodes (obligations) and 5–7 edges (conflicts) between them. Edges are colour-coded and labelled (e.g., "Reporting overlap", "Definitional conflict"). Below the graph is a table showing all conflicts with columns (Type, Obligation A, Obligation B, Description). One conflict is highlighted.
 
 **Speaker note:**
-This is the Conflicts page. One of the hardest parts of multi-jurisdiction compliance is knowing where you have conflicts. Two regulations might both apply to you, and they might contradict. We visualize that as a graph. Each obligation is a bubble. Each conflict is a line between two obligations, coloured by the type of conflict. You can see at a glance where your obligation network is tangled. Click a conflict and we show you both obligations side-by-side so you can decide how to resolve it.
+This is the Conflicts page. One of the hardest parts of multi-jurisdiction compliance is knowing where you have conflicts. Two regulations might both apply to you, and they might contradict. We visualise that as a graph. Each obligation is a bubble. Each conflict is a line between two obligations, coloured by the type of conflict. You can see at a glance where your obligation network is tangled. Click a conflict and we show you both obligations side-by-side so you can decide how to resolve it.
 
 ---
 
