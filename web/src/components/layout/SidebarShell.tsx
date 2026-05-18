@@ -37,28 +37,29 @@ export default function SidebarShell({ children }: { children: React.ReactNode }
     >
       <div className="sidebar__brand">
         {expanded ? (
-          <span className="logo logo--sm" aria-label="ObligaI">
-            <svg viewBox="0 0 160 124" xmlns="http://www.w3.org/2000/svg">
-              {MARK_PATHS}
-              <text
-                x="80" y="108" textAnchor="middle"
-                fontFamily="Inter, -apple-system, Helvetica, Arial, sans-serif"
-                fontWeight="500" fontSize="24" fill="currentColor" letterSpacing="-0.3"
-              >
-                Obliga
-                <tspan
-                  fontFamily="Georgia, 'Times New Roman', serif"
-                  fontStyle="italic" fill="#B85C3A" dx="-0.04em"
-                >I</tspan>
-              </text>
-            </svg>
-          </span>
+          <svg
+            viewBox="0 0 160 124"
+            xmlns="http://www.w3.org/2000/svg"
+            style={{ width: "120px", height: "auto", display: "block" }}
+            aria-label="ObligaI"
+          >
+            {MARK_PATHS}
+            <text x="80" y="108" textAnchor="middle"
+              fontFamily="Inter, -apple-system, Helvetica, Arial, sans-serif"
+              fontWeight="500" fontSize="24" fill="currentColor" letterSpacing="-0.3">
+              Obliga<tspan fontFamily="Georgia, 'Times New Roman', serif"
+                fontStyle="italic" fill="#B85C3A" dx="-0.04em">I</tspan>
+            </text>
+          </svg>
         ) : (
-          <span className="logo" style={{ width: "20px", height: "20px" }} aria-label="ObligaI mark">
-            <svg viewBox="48 16 64 64" xmlns="http://www.w3.org/2000/svg">
-              {MARK_PATHS}
-            </svg>
-          </span>
+          <svg
+            viewBox="48 16 64 64"
+            xmlns="http://www.w3.org/2000/svg"
+            style={{ width: "24px", height: "24px", display: "block" }}
+            aria-label="ObligaI mark"
+          >
+            {MARK_PATHS}
+          </svg>
         )}
       </div>
 
