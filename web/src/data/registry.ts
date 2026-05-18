@@ -60,10 +60,11 @@ export const JURISDICTIONS: Jurisdiction[] = [
   { id: "us", label: "United States", cc: "us" },
   { id: "ca", label: "Canada", cc: "ca" },
   { id: "ch", label: "Switzerland", cc: "ch" },
-  { id: "pe", label: "Peru", cc: "pe" },
-  { id: "pa", label: "Panama", cc: "pa" },
-  { id: "mx", label: "Mexico", cc: "mx" },
   { id: "br", label: "Brazil", cc: "br" },
+  { id: "co", label: "Colombia", cc: "co" },
+  { id: "mx", label: "Mexico", cc: "mx" },
+  { id: "pa", label: "Panama", cc: "pa" },
+  { id: "pe", label: "Peru", cc: "pe" },
   { id: "jp", label: "Japan", cc: "jp" },
   { id: "sg", label: "Singapore", cc: "sg" },
   { id: "hk", label: "Hong Kong", cc: "hk" },
@@ -72,7 +73,6 @@ export const JURISDICTIONS: Jurisdiction[] = [
   { id: "my", label: "Malaysia", cc: "my" },
   { id: "vn", label: "Vietnam", cc: "vn" },
   { id: "th", label: "Thailand", cc: "th" },
-  { id: "co", label: "Colombia", cc: "co" },
 ];
 
 export const REGULATIONS: Regulation[] = [

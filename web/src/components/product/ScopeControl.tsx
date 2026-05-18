@@ -147,7 +147,7 @@ export default function ScopeControl() {
                     key={reg.id}
                     type="button"
                     className={["scope-chip", isSelected ? "is-active" : ""].filter(Boolean).join(" ")}
-                    onClick={() => toggleRegulation(reg.id)}
+                    onClick={() => { toggleRegulation(reg.id); setOpen(false); }}
                     aria-pressed={isSelected}
                   >
                     {reg.shortLabel}
