@@ -20,6 +20,8 @@ All colors, spacing, typography, components, and themes flow from these styleshe
 | File | Purpose |
 |------|---------|
 | **README.md** | This file — design system overview and quick start |
+| **colors_and_type.css** | Canonical tokens (light/dark, typography, spacing) |
+| **ObligaI_Extended_Stylesheet.css** | Extended components, regulation registry, responsive grid |
 | **DESIGN_SYSTEM.md** | Complete design system specification from the designer |
 | **STRUCTURE.md** | Stylesheet organization and section guide |
 | **INTRODUCTION.md** | Long-term architectural vision for the regulatory knowledge graph |
@@ -32,15 +34,23 @@ All colors, spacing, typography, components, and themes flow from these styleshe
 
 ### Where Are the Stylesheets?
 
-The actual stylesheet files live in the **web app**, not here:
+The canonical stylesheet files are in **this folder** (`design/`):
+
+```
+design/
+├── colors_and_type.css                    # Canonical tokens (never modify)
+└── ObligaI_Extended_Stylesheet.css        # Extended components (add components here)
+```
+
+These are copied to the **web app** for use:
 
 ```
 web/src/styles/
-├── colors_and_type.css                    # Canonical (never modify)
-└── ObligaI_Extended_Stylesheet.css        # Extended (add components here)
+├── colors_and_type.css                    # Copy of design/colors_and_type.css
+└── ObligaI_Extended_Stylesheet.css        # Copy of design/ObligaI_Extended_Stylesheet.css
 ```
 
-This `design/` folder contains **documentation and reference materials** only.
+When the stylesheets are updated in `design/`, they should be copied to `web/src/styles/`.
 
 ### How to Use the Design System in Your App
 
