@@ -190,7 +190,7 @@ export default function ReportsPage() {
 
       {/* ── Report list ──────────────────────────────────── */}
       <div className="table-wrap mb-6">
-        <table className="table" aria-label="Generated reports">
+        <table className="table table--compact" aria-label="Generated reports">
           <thead className="table-header">
             <tr>
               <th scope="col">ID</th>
