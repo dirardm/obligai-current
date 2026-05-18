@@ -2846,4 +2846,40 @@ a:not([class]) {
   margin-top: var(--space-2);
 }
 
+/* §28 Stat strip — four-up horizontal stat block. Replaces individual stat cards
+   on dashboards where the data points are countable, related and small. */
+.stat-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: var(--space-4) 0;
+  align-items: center;
+}
+.stat-strip__cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0 var(--space-6);
+  border-right: 1px solid var(--divider);
+}
+.stat-strip__cell:last-child { border-right: 0; }
+.stat-strip .stat-num {
+  font: 700 32px/1 var(--font-sans);
+  letter-spacing: -0.5px;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+}
+.stat-strip .stat-label {
+  font: 700 9px/1 var(--font-sans);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: var(--space-2);
+}
+@media (max-width: 768px) {
+  .stat-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3) 0; }
+  .stat-strip__cell { padding: var(--space-3) var(--space-4); border-right: 0; }
+  .stat-strip__cell:nth-child(odd) { border-right: 1px solid var(--divider); }
+}
+
 /* End of ObligaI_Extended_Stylesheet.css ===================== */
