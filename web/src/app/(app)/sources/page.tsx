@@ -340,10 +340,11 @@ export default function SourcesPage() {
                       href={doc.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-start gap-1 mt-1"
+                      className="btn btn-ghost btn--size-sm mt-1"
+                      role="button"
                     >
-                      <Icon name="external-link" size="sm" ctx="accent" />
-                      <span className="t-small t-accent">View source</span>
+                      <Icon name="external-link" size="sm" />
+                      View source
                     </a>
                   )}
                 </div>

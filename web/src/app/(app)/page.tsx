@@ -116,7 +116,7 @@ export default function DashboardPage() {
             <div className="flex-start gap-4">
               <span className="t-small t-muted">Last 14 days</span>
               {recentChanges.length > RECENT_VISIBLE && (
-                <a href="/register" className="t-small t-accent">View all {recentChanges.length} →</a>
+                <a href="/register" className="btn btn-ghost btn--size-sm" role="button">View all {recentChanges.length}</a>
               )}
             </div>
           }
