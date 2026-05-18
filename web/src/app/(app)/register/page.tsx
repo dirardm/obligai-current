@@ -10,7 +10,7 @@ import StatusBadge from "@/components/product/StatusBadge";
 import CompletenessBar from "@/components/product/CompletenessBar";
 import Icon from "@/components/ui/Icon";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 5;
 const SUMMARY_CLAMP_AT = 140;
 
 type SortCol = "id" | "regulationId" | "framework" | "status" | "completeness" | "deadline" | "assignedTo";
