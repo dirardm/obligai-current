@@ -19,10 +19,12 @@ All colors, spacing, typography, components, and themes flow from these styleshe
 
 | File | Purpose |
 |------|---------|
+| **README.md** | This file — design system overview and quick start |
 | **DESIGN_SYSTEM.md** | Complete design system specification from the designer |
 | **STRUCTURE.md** | Stylesheet organization and section guide |
+| **INTRODUCTION.md** | Long-term architectural vision for the regulatory knowledge graph |
+| **PROMPT.md** | Original design briefs and prompts |
 | **Stylesheet Reference.html** | Interactive live reference (open in browser) |
-| **assets/** | SVG logos, icons, flags (referenced by both web app and stylesheets) |
 
 ---
 
