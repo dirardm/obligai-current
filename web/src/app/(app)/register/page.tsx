@@ -286,6 +286,17 @@ export default function RegisterPage() {
                 className="table"
                 aria-label="Obligation register"
               >
+                <colgroup>
+                  <col style={{ width: "40px" }} />
+                  <col style={{ width: "120px" }} />
+                  <col style={{ width: "90px" }} />
+                  <col style={{ width: "90px" }} />
+                  <col />
+                  <col style={{ width: "110px" }} />
+                  <col style={{ width: "110px" }} />
+                  <col style={{ width: "100px" }} />
+                  <col style={{ width: "120px" }} />
+                </colgroup>
                 <thead className="table-header">
                   <tr>
                     <th scope="col">
