@@ -7,6 +7,7 @@ import { REGULATIONS, JURISDICTIONS } from "@/data/registry";
 import { useScopeStore } from "@/store/scope";
 import Card from "@/components/ui/Card";
 import ScopeControl from "@/components/product/ScopeControl";
+import StatCard from "@/components/product/StatCard";
 import StatusBadge from "@/components/product/StatusBadge";
 import CompletenessBar from "@/components/product/CompletenessBar";
 
@@ -101,25 +102,11 @@ export default function DashboardPage() {
 
       <div className="dashboard-grid mt-4">
 
-        {/* ── Stat strip (span-12) ────────────────────────── */}
-        <section className="card stat-strip span-12">
-          <div className="stat-strip__cell">
-            <div className="stat-num">{total}</div>
-            <div className="stat-label">Total obligations</div>
-          </div>
-          <div className="stat-strip__cell">
-            <div className="stat-num">{conflicted}</div>
-            <div className="stat-label">Conflicted</div>
-          </div>
-          <div className="stat-strip__cell">
-            <div className="stat-num">{implementing}</div>
-            <div className="stat-label">Implementing</div>
-          </div>
-          <div className="stat-strip__cell">
-            <div className="stat-num">{pending}</div>
-            <div className="stat-label">Pending</div>
-          </div>
-        </section>
+        {/* ── Stat cards (4 × span-3) ─────────────────────── */}
+        <StatCard className="span-3" value={total}        label="Total Obligations" />
+        <StatCard className="span-3" value={conflicted}   label="Conflicted" />
+        <StatCard className="span-3" value={implementing} label="Implementing" />
+        <StatCard className="span-3" value={pending}      label="Pending" />
 
         {/* ── Recent regulatory changes (span-8) ──────────── */}
         <Card
