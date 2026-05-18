@@ -288,9 +288,9 @@ export default function RegisterPage() {
               >
                 <colgroup>
                   <col style={{ width: "40px" }} />
-                  <col style={{ width: "120px" }} />
+                  <col style={{ width: "130px" }} />
                   <col style={{ width: "90px" }} />
-                  <col style={{ width: "90px" }} />
+                  <col style={{ width: "80px" }} />
                   <col />
                   <col style={{ width: "110px" }} />
                   <col style={{ width: "110px" }} />
