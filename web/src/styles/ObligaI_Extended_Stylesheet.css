@@ -2846,6 +2846,16 @@ a:not([class]) {
   margin-top: var(--space-1);
 }
 
+/* StatCard layout — content centred, both axes. */
+.card--stat-compact {
+  align-items: center;
+  text-align: center;
+}
+.card--stat-compact .stat-num,
+.card--stat-compact .stat-label {
+  align-self: center;
+}
+
 /* Force table to honour colgroup widths instead of auto-layout */
 .table { table-layout: fixed; }
 .table th, .table td { overflow: hidden; }
