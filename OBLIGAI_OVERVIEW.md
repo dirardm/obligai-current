@@ -58,7 +58,7 @@ The Settings page has six tabs. The Jurisdictions tab allows users to configure 
 
 ## Coverage
 
-ObligaI currently supports 20 financial regulations across 18 jurisdictions, organized as follows:
+ObligaI currently supports 20 financial regulations across 18 jurisdictions, organised as follows:
 
 | Jurisdiction | Regulation | Framework | Category |
 |---|---|---|---|
