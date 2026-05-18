@@ -34,10 +34,11 @@ All colors, spacing, typography, components, and themes flow from these styleshe
 | **ObligaI_Extended_Stylesheet.css** | Extended components, regulation registry, responsive grid |
 
 ### Assets & References
-| Folder | Purpose |
+| Folder/File | Purpose |
 |--------|---------|
 | **assets/** | SVG logos, icons (28), flags (18) |
 | **screenshots/** | Design system reference screenshots |
+| **uploads/** | Design files and source materials |
 | **ObligaI Centralised Stylesheets.zip** | Archived design system package |
 
 ---
