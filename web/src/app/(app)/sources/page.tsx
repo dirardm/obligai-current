@@ -83,10 +83,10 @@ const SCRAPERS: Scraper[] = [
     regulationId: "uk-pra",
     regulationLabel: "UK PRA",
     jurisdictionLabel: "United Kingdom",
-    jurisdictionCc: "gb",
+    jurisdictionCc: "uk",
     lastFetched: "2025-12-10",
     documentCount: 7,
-    health: "degraded",
+    health: "healthy",
     nextFetch: "2025-12-17",
     documents: [
       { id: "doc-pra-1", title: "PRA Rulebook: Liquidity", type: "rulebook", publishedDate: "2024-01-01" },
@@ -178,6 +178,73 @@ const SCRAPERS: Scraper[] = [
       { id: "doc-apra-3", title: "APRA Information Paper: LCR Reporting", type: "circular", publishedDate: "2022-03-22" },
       { id: "doc-apra-4", title: "Response to Submissions — APS 210 Review", type: "notice", publishedDate: "2023-09-14" },
     ],
+  },  {
+    id: "scraper-irl",
+    name: "SFC IRL Reporting",
+    regulationId: "irl",
+    regulationLabel: "IRL",
+    jurisdictionLabel: "Colombia",
+    jurisdictionCc: "co",
+    lastFetched: "2025-12-12",
+    documentCount: 5,
+    health: "healthy",
+    nextFetch: "2025-12-19",
+    documents: [
+      { id: "doc-irl-1", title: "Circular Externa 042 — SFC", type: "circular", publishedDate: "2022-08-15" },
+      { id: "doc-irl-2", title: "SFC Resolution 400/2012 — IRL Framework", type: "regulation", publishedDate: "2012-05-10" },
+      { id: "doc-irl-3", title: "SFC Guidelines on Liquidity Risk", type: "guideline", publishedDate: "2023-04-01" },
+    ],
+  },
+  {
+    id: "scraper-bcb",
+    name: "BCB Liquidity Framework",
+    regulationId: "brazil-bcb",
+    regulationLabel: "BCB",
+    jurisdictionLabel: "Brazil",
+    jurisdictionCc: "br",
+    lastFetched: "2025-12-13",
+    documentCount: 9,
+    health: "healthy",
+    nextFetch: "2025-12-20",
+    documents: [
+      { id: "doc-bcb-1", title: "Resolução CMN 4.401 — Liquidity Requirements", type: "regulation", publishedDate: "2013-12-20" },
+      { id: "doc-bcb-2", title: "Circular 3.835 — Implementation Guidelines", type: "circular", publishedDate: "2023-07-01" },
+      { id: "doc-bcb-3", title: "BCB Prudential Framework — Liquidity Chapter", type: "guideline", publishedDate: "2024-02-15" },
+    ],
+  },
+  {
+    id: "scraper-sbs",
+    name: "SBS Liquidity Requirements",
+    regulationId: "peru",
+    regulationLabel: "SBS Peru",
+    jurisdictionLabel: "Peru",
+    jurisdictionCc: "pe",
+    lastFetched: "2025-12-11",
+    documentCount: 6,
+    health: "healthy",
+    nextFetch: "2025-12-18",
+    documents: [
+      { id: "doc-sbs-1", title: "Resolución SBS N° 9075 — Liquidity Requirements", type: "regulation", publishedDate: "2016-12-22" },
+      { id: "doc-sbs-2", title: "SBS Technical Manual on Liquidity", type: "guideline", publishedDate: "2023-06-30" },
+      { id: "doc-sbs-3", title: "Circular 042-2022 — Calculation Rules Update", type: "circular", publishedDate: "2022-11-10" },
+    ],
+  },
+  {
+    id: "scraper-sbp",
+    name: "SBP Liquidity Standards",
+    regulationId: "panama",
+    regulationLabel: "SBP Panama",
+    jurisdictionLabel: "Panama",
+    jurisdictionCc: "pa",
+    lastFetched: "2025-12-10",
+    documentCount: 4,
+    health: "healthy",
+    nextFetch: "2025-12-17",
+    documents: [
+      { id: "doc-sbp-1", title: "Acuerdo 4-2013 — Liquidity Standards", type: "regulation", publishedDate: "2013-08-15" },
+      { id: "doc-sbp-2", title: "SBP Technical Handbook — Liquidity Risk", type: "guideline", publishedDate: "2024-01-20" },
+      { id: "doc-sbp-3", title: "Memorándum 1234 — Implementation Guidance", type: "notice", publishedDate: "2023-09-05" },
+    ],
   },
 ];
 
@@ -230,7 +297,7 @@ export default function SourcesPage() {
         {/* ── Scrapers table ──────────────────────────── */}
         <div className="sources-table-area">
           <div className="table-wrap">
-            <table className="table" aria-label="Regulatory source scrapers">
+            <table className="table table--compact" aria-label="Regulatory source scrapers">
               <thead className="table-header">
                 <tr>
                   <th scope="col">Jurisdiction</th>
