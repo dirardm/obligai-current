@@ -357,6 +357,16 @@ CREATE TABLE concept_relationships (
   weight FLOAT
 );
 
+CREATE TABLE obligation_concept_grounding (
+  id TEXT PRIMARY KEY,
+  obligation_id TEXT REFERENCES obligations(id),
+  concept_id TEXT REFERENCES concepts(id),
+  role TEXT, -- subject, action, object, condition, temporal
+  confidence FLOAT, -- 0.0-1.0 from Layer 4 grounding model
+  created_at TIMESTAMP
+);
+-- Used by search engine (query type 3) to find obligations by concept
+
 -- Layer 5: Computational
 CREATE TABLE formulas (
   id TEXT PRIMARY KEY,
@@ -377,7 +387,6 @@ CREATE TABLE fields (
   template_id TEXT,
   cell_id TEXT,
   definition TEXT,
-  obligation_id TEXT REFERENCES obligations(id),
   concept_id TEXT REFERENCES concepts(id),
   formula_id TEXT REFERENCES formulas(id),
   validation_rules JSONB,
@@ -385,6 +394,17 @@ CREATE TABLE fields (
   effective_from DATE,
   effective_to DATE
 );
+
+CREATE TABLE field_obligation_bindings (
+  id TEXT PRIMARY KEY,
+  field_id TEXT REFERENCES fields(id),
+  obligation_id TEXT REFERENCES obligations(id),
+  binding_type TEXT, -- primary_mandate, supporting_definition, validation_constraint
+  confidence FLOAT, -- how strongly does this obligation mandate this field?
+  created_at TIMESTAMP
+);
+-- A reporting field may be mandated by multiple obligations.
+-- E.g., COREP cell C_10_00 may be mandated by LCR Art 415a AND ALMM Art 415b.
 
 -- Layer 7: Cross-Regulation
 CREATE TABLE concept_alignments (
@@ -423,6 +443,11 @@ CREATE TABLE provenance (
   confidence TEXT, -- high, medium, low
   notes TEXT
 );
+
+-- NOTE: provenance and annotation_metadata use polymorphic artifact_id/artifact_type pattern.
+-- This trades referential integrity (no FK constraints across types) for schema simplicity.
+-- Application layer must enforce integrity: validate artifact_id exists in correct table before insert/update.
+-- Query optimization: add composite index on (artifact_type, artifact_id) for fast lookups.
 
 -- Layer 10: Generative
 CREATE TABLE grammar_rules (

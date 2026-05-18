@@ -185,14 +185,18 @@ Properties:
 - Concept.embedding (vector[768], aggregated from tokens)
 ```
 
-### ML Methodology
+### Early Validation: Token Storage at Scale
 
-**NER Fine-Tuning Strategy:**
+**Risk:** Neo4j graph stores individual Token nodes (500,000+ tokens × ~50 per sentence × 10,000 sentences = 5M+ nodes at scale, plus embeddings).
 
-- Select multilingual transformer base model
-- Fine-tune on annotated regulatory sentences
-- Evaluate precision, recall, F1 per entity type
-- Target: high F1 on test set (>85%)
+**Early validation (Week 2):** Test token-level graph storage on a sample (1,000 sentences, 50,000 tokens + embeddings). Measure:
+- Memory footprint per token node
+- Query latency for token traversals
+- Total storage size
+
+**If storage is inefficient:** Store token streams as JSONB arrays on Sentence nodes instead. Keep only concept-level nodes in graph. This trades graph queryability for storage efficiency.
+
+**Decision gate:** If token memory >10GB for 1,000 sentences, switch to JSONB token arrays before scaling to 10,000 sentences.
 
 **Multilingual alignment:**
 - Use multilingual embeddings for semantic alignment
@@ -704,15 +708,17 @@ After MVP validation (Layers 1–4 for one regulation):
 
 ## Checkpoints & Go/No-Go Gates
 
-| Phase | Criterion | Go | No-Go Action |
-|-------|-----------|----|----|
-| Layer 1 | Parser tested on sample | Low parse error rate | Fix parser, retest |
-| Layer 3 | Annotation agreement | κ ≥ 0.75 | Refine schema, re-annotate |
-| Layer 3 | ML model performance | F1 ≥ 0.80 | Retrain, try larger model |
-| Layer 4 | Ontology complete | Queries work, high accuracy | Curation iteration |
-| Scale: Multiple regulations | Parsing across regulations | Acceptable error rate | Fix parsing issues |
-| Layer 6 | Field-obligation linking | High confidence matching | Manual review |
-| Layer 7 | Tension detection | High precision and recall | Refine detection rules |
+| Phase | Criterion | Go | No-Go Action | Recovery Budget |
+|-------|-----------|----|----|---|
+| Layer 1 | Parser tested on sample | Low parse error rate | Fix parser, retest | 1 week |
+| Layer 3 | Annotation agreement | κ ≥ 0.75 | Refine schema, re-annotate | 2 weeks |
+| Layer 3 | ML model performance | F1 ≥ 0.80 | Retrain, try larger model | 2 weeks |
+| Layer 4 | Ontology complete | Queries work, high accuracy | Curation iteration | 1 week |
+| Scale: Multiple regulations | Parsing across regulations | Acceptable error rate | Fix parsing issues | 1 week |
+| Layer 6 | Field-obligation linking | High confidence matching | Manual review | 2 weeks |
+| Layer 7 | Tension detection | High precision and recall | Refine heuristics, manual validation | 3 weeks |
+
+Note: Layer 7 gate is highest risk (conflict detection estimated at 50% false positive rate). If gate fails, recovery involves heuristic refinement (2 weeks) + re-evaluation on full obligation set (1 week).
 
 ---
 
