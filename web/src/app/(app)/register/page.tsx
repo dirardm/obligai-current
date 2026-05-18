@@ -57,6 +57,15 @@ export default function RegisterPage() {
   }, []);
 
   /* ── Filters + sort ──────────────────────────────────────────── */
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/register/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
   const [statusFilters, setStatusFilters] = useState<Set<ObligationStatus>>(new Set());
   const [sortCol, setSortCol] = useState<SortCol>("id");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
@@ -178,6 +187,21 @@ export default function RegisterPage() {
         <h1 className="t-h1">Obligation Register</h1>
         <span className="t-secondary t-small">{filtered.length} obligation{filtered.length !== 1 ? "s" : ""}</span>
       </div>
+
+      <form onSubmit={handleSearch} className="register-search mb-3">
+        <input
+          type="search"
+          className="input"
+          placeholder="Search by ID, summary, regulation, framework or assignee…"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          aria-label="Search obligations"
+        />
+        <button type="submit" className="btn btn-secondary btn--size-md">
+          <Icon name="search" size="sm" />
+          Search
+        </button>
+      </form>
 
       <div className="register-layout">
         {/* Filter panel */}

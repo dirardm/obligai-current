@@ -2855,4 +2855,8 @@ a:not([class]) {
   align-self: center;
 }
 
+/* Register search bar */
+.register-search { display: flex; gap: var(--space-3); }
+.register-search .input { flex: 1; }
+
 /* End of ObligaI_Extended_Stylesheet.css ===================== */
