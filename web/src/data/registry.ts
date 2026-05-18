@@ -38,7 +38,7 @@ export type JurisdictionId =
   | "my"
   | "vn"
   | "th"
-  | "co";
+  | "internal";
 
 export interface Regulation {
   id: RegulationId;
@@ -72,7 +72,7 @@ export const JURISDICTIONS: Jurisdiction[] = [
   { id: "my", label: "Malaysia", cc: "my" },
   { id: "vn", label: "Vietnam", cc: "vn" },
   { id: "th", label: "Thailand", cc: "th" },
-  { id: "co", label: "Colombia", cc: "internal" },
+  { id: "internal", label: "Internal", cc: "internal" },
 ];
 
 export const REGULATIONS: Regulation[] = [
@@ -99,10 +99,10 @@ export const REGULATIONS: Regulation[] = [
   },
   {
     id: "irl",
-    label: "Indicador de Riesgo de Liquidez",
+    label: "Internal Liquidity Reporting",
     shortLabel: "IRL",
-    framework: "Circular Externa 042 - SFC",
-    jurisdictionId: "co",
+    framework: "Internal — Treasury Reporting Framework",
+    jurisdictionId: "internal",
   },
   {
     id: "uk-pra",
