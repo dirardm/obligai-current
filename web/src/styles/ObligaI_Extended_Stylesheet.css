@@ -2827,6 +2827,8 @@ a:not([class]) {
   flex-direction: column;
   justify-content: center;
   min-height: 0;
+  width: fit-content;
+  justify-self: center;
 }
 .card--stat-compact .stat-num {
   font: 700 22px/1 var(--font-sans);
