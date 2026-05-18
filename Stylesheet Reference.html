@@ -1,0 +1,2272 @@
+<!DOCTYPE html>
+<html lang="en-GB" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ObligaI · Extended Stylesheet Reference</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+<!-- 1. Canonical tokens (never modify) -->
+<link rel="stylesheet" href="colors_and_type.css"/>
+<!-- 2. The extended stylesheet under review -->
+<link rel="stylesheet" href="ObligaI_Extended_Stylesheet.css"/>
+
+<style>
+  /* Local reference-page layout. Everything here is just so the
+     review document itself reads cleanly — no token values, no
+     component overrides, no business CSS. */
+  body { padding-bottom: 96px; }
+
+  .ref-shell { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+  .ref-side  {
+    position: sticky; top: 0; height: 100vh;
+    border-right: 1px solid var(--divider);
+    background: var(--surface);
+    padding: var(--space-6) var(--space-4);
+    overflow-y: auto;
+  }
+  .ref-side__brand { display: flex; align-items: center; justify-content: flex-start; margin-bottom: var(--space-6); }
+  .ref-side__nav { display: flex; flex-direction: column; gap: 2px; }
+  .ref-side__nav a {
+    display: block;
+    padding: 8px 10px;
+    font: 500 12px/1.2 var(--font-sans);
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+  }
+  .ref-side__nav a:hover { background: var(--accent-faint); color: var(--accent); border-left-color: var(--accent-border); }
+  .ref-side__nav .group { font: 700 9px/1 var(--font-sans); letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-muted); padding: 14px 10px 6px; }
+
+  .ref-main  { padding: var(--space-8) var(--space-12); max-width: 1280px; }
+  .ref-section { padding-block: var(--space-8); border-top: 1px solid var(--divider); }
+  .ref-section:first-of-type { border-top: none; padding-top: 0; }
+  .ref-section__head { margin-bottom: var(--space-6); }
+  .ref-section__head .eyebrow { display: inline-block; margin-bottom: 8px; }
+  .ref-section__head h2 { font: 700 28px/1.2 var(--font-sans); letter-spacing: -0.5px; color: var(--text-primary); margin: 0 0 6px; }
+  .ref-section__head p  { font: 400 14px/1.6 var(--font-sans); color: var(--text-secondary); max-width: 60ch; margin: 0; }
+
+  .ref-subsection { margin-top: var(--space-6); }
+  .ref-subsection > h3 {
+    font: 700 10px/1 var(--font-sans);
+    letter-spacing: 3px; text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 var(--space-4);
+  }
+
+  /* Top bar — theme toggle */
+  .ref-topbar {
+    position: sticky; top: 0; z-index: var(--z-sticky);
+    display: flex; justify-content: space-between; align-items: center;
+    padding: var(--space-3) var(--space-6);
+    background: color-mix(in oklab, var(--page-bg) 86%, transparent);
+    border-bottom: 1px solid var(--divider);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    margin: calc(var(--space-8) * -1) calc(var(--space-12) * -1) var(--space-8);
+    padding-inline: var(--space-12);
+  }
+  .ref-topbar__crumbs { font: 400 12px/1 var(--font-sans); color: var(--text-muted); }
+  .ref-topbar__crumbs > b { color: var(--text-primary); font-weight: 700; }
+  .ref-topbar__actions { display: flex; gap: var(--space-2); align-items: center; }
+
+  /* Sienna ramp strip */
+  .ramp { display: grid; grid-template-columns: repeat(8, 1fr); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .ramp__step { height: 56px; display: flex; align-items: flex-end; padding: 8px 10px; font: 700 9px/1 var(--font-mono); letter-spacing: 0.5px; }
+  .ramp__step--light { color: rgba(15,15,15,0.7); }
+  .ramp__step--dark  { color: rgba(255,255,255,0.85); }
+
+  /* Token / swatch cards */
+  .swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
+  .swatch { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .swatch__chip { height: 56px; }
+  .swatch__meta { padding: 10px 12px; font: 400 11px/1.4 var(--font-mono); color: var(--text-secondary); }
+  .swatch__meta b { display: block; font: 700 11px/1.2 var(--font-sans); color: var(--text-primary); letter-spacing: 0.5px; margin-bottom: 2px; font-family: var(--font-sans); }
+  .swatch__meta i { font: 400 10px/1 var(--font-mono); color: var(--text-muted); font-style: normal; }
+
+  /* Regulation registry — 3 stacked tints per card */
+  .reg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--space-3); }
+  .reg-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .reg-card__strip { height: 6px; background: var(--reg-color, var(--accent)); }
+  .reg-card__body  { padding: var(--space-3) var(--space-4) var(--space-4); }
+  .reg-card__name  { font: 700 13px/1.2 var(--font-sans); color: var(--text-primary); margin: 0; }
+  .reg-card__juris { font: 700 9px/1 var(--font-sans); letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin: 6px 0 12px; }
+  .reg-card__tints { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; }
+  .reg-card__tint  { height: 18px; }
+  .reg-card__id    { font: 400 10px/1 var(--font-mono); color: var(--text-muted); margin-top: var(--space-3); }
+
+  /* Component demo wrappers */
+  .demo {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-6);
+    background: var(--surface);
+  }
+  .demo--inset {
+    background: var(--surface-high);
+  }
+  .demo + .demo { margin-top: var(--space-3); }
+  .demo-row { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: flex-start; }
+  .demo-row--centred { align-items: center; }
+
+  .label-strip {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: var(--space-3);
+  }
+  .label-strip > .t-label { color: var(--text-muted); }
+
+  /* Bar chart (built with the .chart-* utilities) */
+  .demo-chart { display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-6); align-items: stretch; }
+  .chart-svg  { width: 100%; height: 240px; }
+
+  /* Graph */
+  .graph-svg  { width: 100%; height: 320px; }
+
+  /* Logo demo */
+  .logo-rail {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    padding: var(--space-6); gap: var(--space-6);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow-x: auto;
+  }
+  .logo-rail__cell { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); flex: none; }
+  .logo-rail__cell > small { font: 400 10px/1 var(--font-mono); color: var(--text-muted); }
+
+  /* Spacing scale */
+  .spacing-stack { display: grid; grid-template-columns: 80px 1fr; gap: var(--space-2) var(--space-4); align-items: center; }
+  .spacing-stack code { font: 400 11px/1 var(--font-mono); color: var(--text-secondary); }
+  .spacing-bar  { height: 12px; background: var(--accent); border-radius: 2px; }
+
+  /* Type scale */
+  .type-stack > div { padding: 10px 0; border-bottom: 1px solid var(--divider); display: grid; grid-template-columns: 120px 1fr; gap: var(--space-4); align-items: baseline; }
+  .type-stack > div:last-child { border-bottom: none; }
+  .type-stack code { font: 400 10px/1 var(--font-mono); color: var(--text-muted); }
+
+  /* Conflict graph nodes — for the demo */
+  .node-circle { stroke-width: 2; }
+  .node-text   { text-anchor: middle; }
+
+  /* Footer */
+  .ref-footer { padding: var(--space-6) var(--space-12); border-top: 1px solid var(--divider); color: var(--text-muted); font: 400 11px/1.5 var(--font-sans); }
+  .ref-footer b { color: var(--text-secondary); }
+
+  /* Theme toggle button override (compact) */
+  .theme-toggle { display: inline-flex; gap: 0; border: 1px solid var(--accent-border); border-radius: 2px; overflow: hidden; }
+  .theme-toggle button {
+    appearance: none; border: 0; background: transparent;
+    padding: 8px 12px;
+    font: 700 10px/1 var(--font-sans); letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--text-muted); cursor: pointer;
+    transition: background var(--transition-micro), color var(--transition-micro);
+  }
+  .theme-toggle button.is-active { background: var(--accent); color: #FFF; }
+  .theme-toggle button:hover:not(.is-active) { color: var(--accent); background: var(--accent-faint); }
+
+  @media (max-width: 1100px) {
+    .ref-shell { grid-template-columns: 1fr; }
+    .ref-side  { position: static; height: auto; }
+    .ref-main  { padding: var(--space-6); }
+    .ref-topbar { margin-inline: calc(var(--space-6) * -1); padding-inline: var(--space-6); }
+  }
+
+  .icon-grid, .flag-grid { display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+  .icon-cell, .flag-cell { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: var(--space-3); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); transition: background var(--transition-micro), border-color var(--transition-micro); }
+  .icon-cell:hover, .flag-cell:hover { background: var(--accent-faint); border-color: var(--accent-border); }
+  .icon-cell > small, .flag-cell > small { font: 400 10px/1.2 var(--font-mono); color: var(--text-muted); text-align: center; word-break: break-word; }
+</style>
+</head>
+
+<body>
+<!-- ====== Inlined icon + flag sprites (also live as files in assets/) ====== -->
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <defs>
+
+    <symbol id="icon-regulation" viewBox="0 0 24 24">
+      <path d="M6 3h8l4 4v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path>
+      <path d="M14 3v4h4"></path>
+      <circle cx="12" cy="14" r="2.4"></circle>
+      <path d="M10 17l-1 3M14 17l1 3"></path>
+    </symbol>
+
+    <symbol id="icon-obligation" viewBox="0 0 24 24">
+      <path d="M7 4h10v3H7zM7 5H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2"></path>
+      <path d="M8 13l3 3 5-6"></path>
+    </symbol>
+
+    <symbol id="icon-conflict" viewBox="0 0 24 24">
+      <path d="M4 7h11"></path>
+      <path d="M11 3l4 4-4 4"></path>
+      <path d="M20 17H9"></path>
+      <path d="M13 13l-4 4 4 4"></path>
+    </symbol>
+
+    <symbol id="icon-jurisdiction" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="8.5"></circle>
+      <path d="M3.5 12h17"></path>
+      <path d="M12 3.5c2.5 2.6 4 5.7 4 8.5s-1.5 5.9-4 8.5"></path>
+      <path d="M12 3.5c-2.5 2.6-4 5.7-4 8.5s1.5 5.9 4 8.5"></path>
+    </symbol>
+
+    <symbol id="icon-control" viewBox="0 0 24 24">
+      <line x1="4" y1="7" x2="20" y2="7"></line>
+      <line x1="4" y1="12" x2="20" y2="12"></line>
+      <line x1="4" y1="17" x2="20" y2="17"></line>
+      <circle cx="9" cy="7" r="2"></circle>
+      <circle cx="15" cy="12" r="2"></circle>
+      <circle cx="7" cy="17" r="2"></circle>
+    </symbol>
+
+    <symbol id="icon-audit-trail" viewBox="0 0 24 24">
+      <circle cx="6" cy="7" r="1.5"></circle>
+      <circle cx="6" cy="12" r="1.5"></circle>
+      <circle cx="6" cy="17" r="1.5"></circle>
+      <line x1="10" y1="7" x2="20" y2="7"></line>
+      <line x1="10" y1="12" x2="20" y2="12"></line>
+      <line x1="10" y1="17" x2="20" y2="17"></line>
+    </symbol>
+
+    <symbol id="icon-monitor" viewBox="0 0 24 24">
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path>
+      <circle cx="12" cy="12" r="3"></circle>
+    </symbol>
+
+    <symbol id="icon-search" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="6"></circle>
+      <line x1="16" y1="16" x2="20" y2="20"></line>
+    </symbol>
+
+    <symbol id="icon-filter" viewBox="0 0 24 24">
+      <path d="M4 5h16l-6 8v6l-4-2v-4z"></path>
+    </symbol>
+
+    <symbol id="icon-export" viewBox="0 0 24 24">
+      <path d="M14 4h6v6"></path>
+      <line x1="20" y1="4" x2="11" y2="13"></line>
+      <path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"></path>
+    </symbol>
+
+    <symbol id="icon-upload" viewBox="0 0 24 24">
+      <path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"></path>
+      <path d="M12 4v12"></path>
+      <path d="M7 9l5-5 5 5"></path>
+    </symbol>
+
+    <symbol id="icon-user" viewBox="0 0 24 24">
+      <circle cx="12" cy="8" r="4"></circle>
+      <path d="M4 20c1.4-3.6 4.6-6 8-6s6.6 2.4 8 6"></path>
+    </symbol>
+
+    <symbol id="icon-settings" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="3"></circle>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+    </symbol>
+
+    <symbol id="icon-chevron-up" viewBox="0 0 24 24">
+      <polyline points="6 15 12 9 18 15"></polyline>
+    </symbol>
+
+    <symbol id="icon-chevron-down" viewBox="0 0 24 24">
+      <polyline points="6 9 12 15 18 9"></polyline>
+    </symbol>
+
+    <symbol id="icon-chevron-left" viewBox="0 0 24 24">
+      <polyline points="15 6 9 12 15 18"></polyline>
+    </symbol>
+
+    <symbol id="icon-chevron-right" viewBox="0 0 24 24">
+      <polyline points="9 6 15 12 9 18"></polyline>
+    </symbol>
+
+    <symbol id="icon-close" viewBox="0 0 24 24">
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+    </symbol>
+
+    <symbol id="icon-check" viewBox="0 0 24 24">
+      <polyline points="4 12 10 18 20 6"></polyline>
+    </symbol>
+
+    <symbol id="icon-alert" viewBox="0 0 24 24">
+      <path d="M12 3l10 17H2z"></path>
+      <line x1="12" y1="10" x2="12" y2="14"></line>
+      <circle cx="12" cy="17.5" r="0.6" fill="currentColor" stroke="none"></circle>
+    </symbol>
+
+    <symbol id="icon-info" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9"></circle>
+      <line x1="12" y1="11" x2="12" y2="16"></line>
+      <circle cx="12" cy="8" r="0.6" fill="currentColor" stroke="none"></circle>
+    </symbol>
+
+    <symbol id="icon-calendar" viewBox="0 0 24 24">
+      <rect x="3.5" y="5" width="17" height="15" rx="1"></rect>
+      <line x1="3.5" y1="10" x2="20.5" y2="10"></line>
+      <line x1="8" y1="3" x2="8" y2="7"></line>
+      <line x1="16" y1="3" x2="16" y2="7"></line>
+    </symbol>
+
+    <symbol id="icon-lock" viewBox="0 0 24 24">
+      <rect x="4" y="11" width="16" height="10" rx="1"></rect>
+      <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
+    </symbol>
+
+    <symbol id="icon-link" viewBox="0 0 24 24">
+      <path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 1 0-7-7l-1 1"></path>
+      <path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 1 0 7 7l1-1"></path>
+    </symbol>
+
+    <symbol id="icon-copy" viewBox="0 0 24 24">
+      <rect x="8" y="8" width="12" height="12" rx="1"></rect>
+      <path d="M4 16V5a1 1 0 0 1 1-1h11"></path>
+    </symbol>
+
+    <symbol id="icon-external-link" viewBox="0 0 24 24">
+      <path d="M19 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h6"></path>
+      <path d="M15 4h5v5"></path>
+      <line x1="11" y1="13" x2="20" y2="4"></line>
+    </symbol>
+
+    <symbol id="icon-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4"></circle>
+      <line x1="12" y1="2" x2="12" y2="4"></line>
+      <line x1="12" y1="20" x2="12" y2="22"></line>
+      <line x1="2" y1="12" x2="4" y2="12"></line>
+      <line x1="20" y1="12" x2="22" y2="12"></line>
+      <line x1="4.9" y1="4.9" x2="6.3" y2="6.3"></line>
+      <line x1="17.7" y1="17.7" x2="19.1" y2="19.1"></line>
+      <line x1="4.9" y1="19.1" x2="6.3" y2="17.7"></line>
+      <line x1="17.7" y1="6.3" x2="19.1" y2="4.9"></line>
+    </symbol>
+
+    <symbol id="icon-moon" viewBox="0 0 24 24">
+      <path d="M21 13a8 8 0 0 1-10-10 8 8 0 1 0 10 10z"></path>
+    </symbol>
+
+  </defs>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <defs>
+
+    <symbol id="flag-eu" viewBox="0 0 24 16">
+      <rect width="24" height="16" fill="#003399"></rect>
+      <g fill="#FFCC00">
+        <circle cx="12" cy="4.5" r="0.7"></circle>
+        <circle cx="15.4" cy="5.4" r="0.7"></circle>
+        <circle cx="17" cy="8" r="0.7"></circle>
+        <circle cx="15.4" cy="10.6" r="0.7"></circle>
+        <circle cx="12" cy="11.5" r="0.7"></circle>
+        <circle cx="8.6" cy="10.6" r="0.7"></circle>
+        <circle cx="7" cy="8" r="0.7"></circle>
+        <circle cx="8.6" cy="5.4" r="0.7"></circle>
+      </g>
+    </symbol>
+
+    <symbol id="flag-uk" viewBox="0 0 24 16">
+      <rect width="24" height="16" fill="#012169"></rect>
+      <path d="M0 0L24 16M24 0L0 16" stroke="#FFFFFF" stroke-width="2.4"></path>
+      <path d="M0 0L24 16M24 0L0 16" stroke="#C8102E" stroke-width="1"></path>
+      <rect x="10" width="4" height="16" fill="#FFFFFF"></rect>
+      <rect y="6" width="24" height="4" fill="#FFFFFF"></rect>
+      <rect x="11" width="2" height="16" fill="#C8102E"></rect>
+      <rect y="7" width="24" height="2" fill="#C8102E"></rect>
+    </symbol>
+
+    <symbol id="flag-us" viewBox="0 0 24 16">
+      <rect width="24" height="16" fill="#FFFFFF"></rect>
+      <g fill="#B22234">
+        <rect width="24" height="1.23"></rect>
+        <rect y="2.46" width="24" height="1.23"></rect>
+        <rect y="4.92" width="24" height="1.24"></rect>
+        <rect y="7.38" width="24" height="1.24"></rect>
+        <rect y="9.84" width="24" height="1.24"></rect>
+        <rect y="12.30" width="24" height="1.24"></rect>
+        <rect y="14.77" width="24" height="1.23"></rect>
+      </g>
+      <rect width="10" height="8.6" fill="#3C3B6E"></rect>
+      <g fill="#FFFFFF">
+        <circle cx="2" cy="2" r="0.5"></circle>
+        <circle cx="5" cy="2" r="0.5"></circle>
+        <circle cx="8" cy="2" r="0.5"></circle>
+        <circle cx="3.5" cy="4" r="0.5"></circle>
+        <circle cx="6.5" cy="4" r="0.5"></circle>
+        <circle cx="2" cy="6" r="0.5"></circle>
+        <circle cx="5" cy="6" r="0.5"></circle>
+        <circle cx="8" cy="6" r="0.5"></circle>
+      </g>
+    </symbol>
+
+    <symbol id="flag-ca" viewBox="0 0 24 16">
+      <rect width="24" height="16" fill="#FFFFFF"></rect>
+      <rect width="6" height="16" fill="#D52B1E"></rect>
+      <rect x="18" width="6" height="16" fill="#D52B1E"></rect>
+      <path d="M12 4l0.7 1.7L14.3 5.4l-0.7 1.6 1.6 0.9-2 0.6 0.6 2.2-1.8-1.3-1.8 1.3 0.6-2.2-2-0.6 1.6-0.9-0.7-1.6 1.6 0.3z" fill="#D52B1E"></path>
+    </symbol>
+
+    <symbol id="flag-ch" viewBox="0 0 24 16">
+      <rect width="24" height="16" fill="#D52B1E"></rect>
+      <rect x="10.4" y="3.6" width="3.2" height="8.8" fill="#FFFFFF"></rect>
+      <rect x="7.6" y="6.4" width="8.8" height="3.2" fill="#FFFFFF"></rect>
+    </symbol>
+
+    <symbol id="flag-pe" viewBox="0 0 24 16">
+      <rect width="8" height="16" fill="#D91023"></rect>
+      <rect x="8" width="8" height="16" fill="#FFFFFF"></rect>
+      <rect x="16" width="8" height="16" fill="#D91023"></rect>
+    </symbol>
+
+    <symbol id="flag-pa" viewBox="0 0 24 16">
+      <rect width="12" height="8" fill="#FFFFFF"></rect>
+      <rect x="12" width="12" height="8" fill="#D21034"></rect>
+      <rect y="8" width="12" height="8" fill="#005AA9"></rect>
+      <rect x="12" y="8" width="12" height="8" fill="#FFFFFF"></rect>
+    </symbol>
+
+    <symbol id="flag-mx" viewBox="0 0 24 16">
+      <rect width="8" height="16" fill="#006847"></rect>
+      <rect x="8" width="8" height="16" fill="#FFFFFF"></rect>
+      <rect x="16" width="8" height="16" fill="#CE1126"></rect>
+      <circle cx="12" cy="8" r="1.4" fill="none" stroke="#9D5C13" stroke-width="0.4"></circle>
+    </symbol>
+
+    <symbol id="flag-br" viewBox="0 0 24 16">
+      <rect width="24" height="16" fill="#009C3B"></rect>
+      <path d="M12 2.4L21.6 8 12 13.6 2.4 8Z" fill="#FFDF00"></path>
+      <circle cx="12" cy="8" r="2.6" fill="#002776"></circle>
+    </symbol>
+
+    <symbol id="flag-jp" viewBox="0 0 24 16">
+      <rect width="24" height="16" fill="#FFFFFF"></rect>
+      <circle cx="12" cy="8" r="4" fill="#BC002D"></circle>
+    </symbol>
+
+    <symbol id="flag-sg" viewBox="0 0 24 16">
+      <rect width="24" height="8" fill="#EF3340"></rect>
+      <rect y="8" width="24" height="8" fill="#FFFFFF"></rect>
+      <circle cx="6" cy="4" r="2.4" fill="#FFFFFF"></circle>
+      <circle cx="7.1" cy="4" r="2" fill="#EF3340"></circle>
+      <g fill="#FFFFFF">
+        <circle cx="9.7" cy="3" r="0.4"></circle>
+        <circle cx="11" cy="4" r="0.4"></circle>
+        <circle cx="9.7" cy="5" r="0.4"></circle>
+        <circle cx="8.4" cy="4.6" r="0.4"></circle>
+        <circle cx="8.4" cy="3.4" r="0.4"></circle>
+      </g>
+    </symbol>
+
+    <symbol id="flag-hk" viewBox="0 0 24 16">
+      <rect width="24" height="16" fill="#DE2910"></rect>
+      <g transform="translate(12 8)" fill="#FFFFFF">
+        <path d="M0 -3 L0.9 -0.9 L3 0 L0.9 0.9 L0 3 L-0.9 0.9 L-3 0 L-0.9 -0.9 Z"></path>
+      </g>
+    </symbol>
+
+    <symbol id="flag-au" viewBox="0 0 24 16">
+      <rect width="24" height="16" fill="#012169"></rect>
+      <rect width="10" height="8" fill="#012169"></rect>
+      <path d="M0 0L10 8M10 0L0 8" stroke="#FFFFFF" stroke-width="0.8"></path>
+      <rect x="4.5" width="1" height="8" fill="#FFFFFF"></rect>
+      <rect y="3.5" width="10" height="1" fill="#FFFFFF"></rect>
+      <g fill="#FFFFFF">
+        <circle cx="6" cy="12" r="0.6"></circle>
+        <circle cx="13" cy="3" r="0.5"></circle>
+        <circle cx="16" cy="6" r="0.5"></circle>
+        <circle cx="19" cy="11" r="0.6"></circle>
+        <circle cx="16" cy="13" r="0.5"></circle>
+        <circle cx="21" cy="8" r="0.5"></circle>
+      </g>
+    </symbol>
+
+    <symbol id="flag-internal" viewBox="0 0 24 16">
+      <rect width="24" height="16" fill="#FAF7F4" stroke="#B85C3A" stroke-width="0.5"></rect>
+      <circle cx="12" cy="8" r="3.2" fill="#B85C3A"></circle>
+    </symbol>
+
+    <symbol id="flag-id" viewBox="0 0 24 16">
+      <rect width="24" height="8" fill="#CE1126"></rect>
+      <rect y="8" width="24" height="8" fill="#FFFFFF"></rect>
+    </symbol>
+
+    <symbol id="flag-my" viewBox="0 0 24 16">
+      <rect width="24" height="16" fill="#FFFFFF"></rect>
+      <g fill="#CC0001">
+        <rect width="24" height="1.14"></rect>
+        <rect y="2.29" width="24" height="1.14"></rect>
+        <rect y="4.57" width="24" height="1.14"></rect>
+        <rect y="6.86" width="24" height="1.14"></rect>
+        <rect y="9.14" width="24" height="1.14"></rect>
+        <rect y="11.43" width="24" height="1.14"></rect>
+        <rect y="13.71" width="24" height="2.29"></rect>
+      </g>
+      <rect width="10" height="9" fill="#010066"></rect>
+      <circle cx="4.4" cy="4.4" r="1.8" fill="#FFCC00"></circle>
+      <circle cx="5.2" cy="4.4" r="1.5" fill="#010066"></circle>
+      <path d="M7.5 4.4l-0.55 0.4 0.21 -0.65 -0.55 -0.4 0.68 0 0.21 -0.65 0.21 0.65 0.68 0 -0.55 0.4 0.21 0.65z" fill="#FFCC00"></path>
+    </symbol>
+
+    <symbol id="flag-vn" viewBox="0 0 24 16">
+      <rect width="24" height="16" fill="#DA251D"></rect>
+      <path d="M12 4.4l1.2 3.6h3.6l-2.9 2.2 1.1 3.4-2.9-2.2-2.9 2.2 1.1-3.4-2.9-2.2h3.6z" fill="#FFFF00"></path>
+    </symbol>
+
+    <symbol id="flag-th" viewBox="0 0 24 16">
+      <rect width="24" height="2.67" fill="#A51931"></rect>
+      <rect y="2.67" width="24" height="2.67" fill="#FFFFFF"></rect>
+      <rect y="5.33" width="24" height="5.33" fill="#2D2A4A"></rect>
+      <rect y="10.67" width="24" height="2.67" fill="#FFFFFF"></rect>
+      <rect y="13.33" width="24" height="2.67" fill="#A51931"></rect>
+    </symbol>
+
+  </defs>
+</svg>
+
+<div class="ref-shell">
+
+  <!-- ============ SIDEBAR NAV ============ -->
+  <aside class="ref-side" data-screen-label="00 Sidebar">
+    <div class="ref-side__brand">
+      <span class="logo logo--sm">
+        <svg viewBox="0 0 160 124" xmlns="http://www.w3.org/2000/svg" aria-label="ObligaI">
+          <line x1="80" y1="46" x2="80" y2="34" stroke="#B85C3A" stroke-width="3" stroke-linecap="round"/>
+          <line x1="88" y1="61" x2="109" y2="75" stroke="#B85C3A" stroke-width="3" stroke-linecap="round"/>
+          <line x1="72" y1="62" x2="55" y2="74" stroke="#B85C3A" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="80" cy="56" r="10" fill="#B85C3A"/>
+          <circle cx="80" cy="28" r="6" fill="none" stroke="#B85C3A" stroke-width="3"/>
+          <circle cx="114" cy="78" r="6" fill="none" stroke="#B85C3A" stroke-width="3"/>
+          <circle cx="50" cy="78" r="6" fill="none" stroke="#B85C3A" stroke-width="3"/>
+          <text x="80" y="108" text-anchor="middle" font-family="Inter, -apple-system, Helvetica, Arial, sans-serif" font-weight="500" font-size="24" fill="currentColor" letter-spacing="-0.3">Obliga<tspan font-family="Georgia, &#39;Times New Roman&#39;, serif" font-style="italic" fill="#B85C3A" dx="-0.04em">I</tspan></text>
+        </svg>
+      </span>
+    </div>
+
+    <nav class="ref-side__nav">
+      <span class="group">Foundations</span>
+      <a href="#intro">Overview</a>
+      <a href="#colours">Colour tokens</a>
+      <a href="#typography">Typography</a>
+      <a href="#spacing">Spacing &amp; motion</a>
+      <a href="#logo">Logo system</a>
+
+      <span class="group">Registry</span>
+      <a href="#regulations">Regulations (16)</a>
+      <a href="#jurisdictions">Jurisdictions</a>
+      <a href="#scoping" style="color: var(--accent); font-weight: 700;">Scoping at 50+ →</a>
+
+      <span class="group">Components</span>
+      <a href="#buttons">Buttons</a>
+      <a href="#forms">Forms</a>
+      <a href="#cards">Cards</a>
+      <a href="#badges">Badges &amp; status</a>
+      <a href="#tables">Tables</a>
+      <a href="#alerts">Alerts &amp; feedback</a>
+      <a href="#tabs">Tabs &amp; menu</a>
+
+      <span class="group">Data</span>
+      <a href="#charts">Charts</a>
+      <a href="#graphs">Graphs (Reagraph)</a>
+      <a href="#completeness">Completeness &amp; scores</a>
+
+      <span class="group">Layout</span>
+      <a href="#more">More components</a>
+      <a href="#grid">Grid &amp; responsive</a>
+    </nav>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="ref-main">
+
+    <div class="ref-topbar">
+      <div class="ref-topbar__crumbs">
+        <span>ObligaI</span> <span style="color: var(--text-muted); padding: 0 4px;">/</span>
+        <span>Design system</span> <span style="color: var(--text-muted); padding: 0 4px;">/</span>
+        <b>Extended Stylesheet</b>
+      </div>
+      <div class="ref-topbar__actions">
+        <span class="t-label" style="color: var(--text-muted); margin-right: 4px;">Theme</span>
+        <div class="theme-toggle">
+          <button type="button" data-theme-set="light" class="is-active">Light</button>
+          <button type="button" data-theme-set="dark">Dark</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ INTRO ============ -->
+    <section class="ref-section" id="intro" data-screen-label="01 Overview">
+      <div class="ref-section__head">
+        <span class="eyebrow">Overview</span>
+        <h2>The Extended Centralised Stylesheet</h2>
+        <p>One file, layered above <code class="code-inline">colors_and_type.css</code>, that gives every product surface its components, its responsive system, its regulation registry and its themes. Scales to 50+ countries by appending tokens — no logic changes.</p>
+      </div>
+
+      <div class="grid-4" style="margin-top: var(--space-6);">
+        <div class="card card--stat">
+          <div class="stat-num">3</div>
+          <div class="stat-label">Files in the chain</div>
+          <p class="t-small mt-3 mb-0">colors_and_type · extended stylesheet · this reference.</p>
+        </div>
+        <div class="card card--stat">
+          <div class="stat-num">16</div>
+          <div class="stat-label">Regulations registered</div>
+          <p class="t-small mt-3 mb-0">6 live · 10 placeholders for the next wave.</p>
+        </div>
+        <div class="card card--stat">
+          <div class="stat-num">6</div>
+          <div class="stat-label">Jurisdictions grouped</div>
+          <p class="t-small mt-3 mb-0">EU · LatAm · UK · APAC · NAmer · EMEA.</p>
+        </div>
+        <div class="card card--stat">
+          <div class="stat-num">2</div>
+          <div class="stat-label">Themes, mode-invariant brand</div>
+          <p class="t-small mt-3 mb-0">Sienna stays the same in both modes.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ COLOURS ============ -->
+    <section class="ref-section" id="colours" data-screen-label="02 Colours">
+      <div class="ref-section__head">
+        <span class="eyebrow">Foundations · colour</span>
+        <h2>Colour tokens</h2>
+        <p>Sienna is the only mode-invariant family — used for accent, focus, borders and brand. Every surface, text and status colour switches via <code class="code-inline">[data-theme]</code>.</p>
+      </div>
+
+      <div class="ref-subsection">
+        <h3>Sienna ramp · mode-invariant</h3>
+        <div class="ramp">
+          <div class="ramp__step ramp__step--light" style="background: var(--sienna-100);">100</div>
+          <div class="ramp__step ramp__step--light" style="background: var(--sienna-200);">200</div>
+          <div class="ramp__step ramp__step--light" style="background: var(--sienna-300);">300</div>
+          <div class="ramp__step ramp__step--dark"  style="background: var(--sienna-400);">400</div>
+          <div class="ramp__step ramp__step--dark"  style="background: var(--sienna-500);">500</div>
+          <div class="ramp__step ramp__step--dark"  style="background: var(--sienna-600);">600</div>
+          <div class="ramp__step ramp__step--dark"  style="background: var(--sienna-700);">700</div>
+          <div class="ramp__step ramp__step--dark"  style="background: var(--sienna-900);">900</div>
+        </div>
+      </div>
+
+      <div class="ref-subsection">
+        <h3>Semantic tokens</h3>
+        <div class="swatch-grid">
+          <div class="swatch"><div class="swatch__chip" style="background: var(--page-bg); border-bottom: 1px solid var(--border);"></div><div class="swatch__meta"><b>--page-bg</b><i>page background</i></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background: var(--surface); border-bottom: 1px solid var(--border);"></div><div class="swatch__meta"><b>--surface</b><i>card / panel</i></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background: var(--surface-high);"></div><div class="swatch__meta"><b>--surface-high</b><i>raised surface</i></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background: var(--surface-overlay);"></div><div class="swatch__meta"><b>--surface-overlay</b><i>menu / dropdown</i></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background: var(--accent);"></div><div class="swatch__meta"><b>--accent</b><i>#B85C3A · mode-invariant</i></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background: var(--accent-faint);"></div><div class="swatch__meta"><b>--accent-faint</b><i>tint, badge bg</i></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background: var(--border-error);"></div><div class="swatch__meta"><b>--border-error</b><i>error border &amp; text</i></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background: var(--focus-ring);"></div><div class="swatch__meta"><b>--focus-ring</b><i>2px sienna, both modes</i></div></div>
+        </div>
+      </div>
+
+      <div class="ref-subsection">
+        <h3>Status</h3>
+        <div class="swatch-grid">
+          <div class="swatch"><div class="swatch__chip" style="background: var(--status-active);"></div><div class="swatch__meta"><b>--status-active</b><i>green</i></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background: var(--status-conflicted);"></div><div class="swatch__meta"><b>--status-conflicted</b><i>crimson</i></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background: var(--status-implementing);"></div><div class="swatch__meta"><b>--status-implementing</b><i>blue</i></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background: var(--status-pending);"></div><div class="swatch__meta"><b>--status-pending</b><i>amber · sole exception</i></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background: var(--status-inactive);"></div><div class="swatch__meta"><b>--status-inactive</b><i>stone grey</i></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TYPOGRAPHY ============ -->
+    <section class="ref-section" id="typography" data-screen-label="03 Typography">
+      <div class="ref-section__head">
+        <span class="eyebrow">Foundations · type</span>
+        <h2>Typography</h2>
+        <p>Inter for everything except the italic <i style="font-family: var(--font-italic); color: var(--accent); font-weight: 700;">I</i> in the wordmark (Georgia Italic) and code (JetBrains Mono). The type scale is fixed — components do not invent sizes.</p>
+      </div>
+
+      <div class="demo">
+        <div class="type-stack">
+          <div><code>.t-display</code><div class="t-display">Regulatory intelligence</div></div>
+          <div><code>.t-h1</code>     <div class="t-h1">Liquidity, in eleven jurisdictions</div></div>
+          <div><code>.t-h2</code>     <div class="t-h2">Net Stable Funding Ratio · NSFR</div></div>
+          <div><code>.t-h3</code>     <div class="t-h3">Obligations expiring this quarter</div></div>
+          <div><code>.t-h4</code>     <div class="t-h4">Conflict between LCR Art. 412 and SBS Resolution N-9075</div></div>
+          <div><code>.t-body</code>   <div class="t-body">Article 412 of Regulation (EU) 575/2013 requires institutions to hold liquid assets equivalent to net cash outflows over a 30-day stress scenario.</div></div>
+          <div><code>.t-small</code>  <div class="t-small">Last fetched 14 minutes ago · 12 documents indexed</div></div>
+          <div><code>.t-caption</code><div class="t-caption">EBA · Delegated Regulation 2015/61 · Annex II</div></div>
+          <div><code>.t-label</code>  <div class="t-label">Jurisdiction</div></div>
+          <div><code>.t-mono</code>   <div class="t-mono">OBLIG-LCR-0412 · v3 · 2024-11-04</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SPACING & MOTION ============ -->
+    <section class="ref-section" id="spacing" data-screen-label="04 Spacing">
+      <div class="ref-section__head">
+        <span class="eyebrow">Foundations · rhythm</span>
+        <h2>Spacing &amp; motion</h2>
+        <p>An 8px base scale, with 4px for tight type rhythm. Motion is short, sienna-flavoured, and never decorative.</p>
+      </div>
+
+      <div class="demo-row" style="align-items: stretch;">
+        <div class="demo" style="flex: 1; min-width: 320px;">
+          <div class="label-strip"><span class="t-label">Spacing scale</span><span class="t-mono t-muted">4 → 128px</span></div>
+          <div class="spacing-stack">
+            <code>--space-1</code> <div class="spacing-bar" style="width: 4px;"></div>
+            <code>--space-2</code> <div class="spacing-bar" style="width: 8px;"></div>
+            <code>--space-3</code> <div class="spacing-bar" style="width: 12px;"></div>
+            <code>--space-4</code> <div class="spacing-bar" style="width: 16px;"></div>
+            <code>--space-6</code> <div class="spacing-bar" style="width: 24px;"></div>
+            <code>--space-8</code> <div class="spacing-bar" style="width: 32px;"></div>
+            <code>--space-12</code><div class="spacing-bar" style="width: 48px;"></div>
+            <code>--space-16</code><div class="spacing-bar" style="width: 64px;"></div>
+            <code>--space-24</code><div class="spacing-bar" style="width: 96px;"></div>
+            <code>--space-32</code><div class="spacing-bar" style="width: 128px;"></div>
+          </div>
+        </div>
+        <div class="demo" style="flex: 1; min-width: 320px;">
+          <div class="label-strip"><span class="t-label">Motion tokens</span><span class="t-mono t-muted">ease-out</span></div>
+          <div class="spacing-stack">
+            <code>--transition-micro</code> <div class="t-small">150ms · hover, focus, toggle</div>
+            <code>--transition-base</code>  <div class="t-small">300ms · card lift, generic</div>
+            <code>--transition-panel</code> <div class="t-small">250ms · drawer / panel</div>
+            <code>--transition-page</code>  <div class="t-small">400ms · route change</div>
+            <code>--easing-spring</code>    <div class="t-small">subtle overshoot</div>
+            <code>--easing-smooth</code>    <div class="t-small">no overshoot, mild</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LOGO ============ -->
+    <section class="ref-section" id="logo" data-screen-label="05 Logo">
+      <div class="ref-section__head">
+        <span class="eyebrow">Foundations · brand</span>
+        <h2>Logo system</h2>
+        <p>One indivisible vertical lockup. The canonical SVG (mark + wordmark, in a 160 × 124 viewBox) is the only sanctioned form. Use the <code class="code-inline">.logo</code> class and a size modifier; the SVG scales proportionally. Horizontal and split renderings are forbidden.</p>
+      </div>
+
+      <div class="logo-rail">
+        <div class="logo-rail__cell">
+          <span class="logo logo--sm">
+            <svg viewBox="0 0 160 124" xmlns="http://www.w3.org/2000/svg">
+              <line x1="80" y1="46" x2="80" y2="34" stroke="#B85C3A" stroke-width="3" stroke-linecap="round"/>
+              <line x1="88" y1="61" x2="109" y2="75" stroke="#B85C3A" stroke-width="3" stroke-linecap="round"/>
+              <line x1="72" y1="62" x2="55" y2="74" stroke="#B85C3A" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="80" cy="56" r="10" fill="#B85C3A"/>
+              <circle cx="80" cy="28" r="6" fill="none" stroke="#B85C3A" stroke-width="3"/>
+              <circle cx="114" cy="78" r="6" fill="none" stroke="#B85C3A" stroke-width="3"/>
+              <circle cx="50" cy="78" r="6" fill="none" stroke="#B85C3A" stroke-width="3"/>
+              <text x="80" y="108" text-anchor="middle" font-family="Inter, -apple-system, Helvetica, Arial, sans-serif" font-weight="500" font-size="24" fill="currentColor" letter-spacing="-0.3">Obliga<tspan font-family="Georgia, &#39;Times New Roman&#39;, serif" font-style="italic" fill="#B85C3A" dx="-0.04em">I</tspan></text>
+            </svg>
+          </span>
+          <small>sm · 80px</small>
+        </div>
+
+        <div class="logo-rail__cell">
+          <span class="logo logo--md">
+            <svg viewBox="0 0 160 124" xmlns="http://www.w3.org/2000/svg">
+              <line x1="80" y1="46" x2="80" y2="34" stroke="#B85C3A" stroke-width="3" stroke-linecap="round"/>
+              <line x1="88" y1="61" x2="109" y2="75" stroke="#B85C3A" stroke-width="3" stroke-linecap="round"/>
+              <line x1="72" y1="62" x2="55" y2="74" stroke="#B85C3A" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="80" cy="56" r="10" fill="#B85C3A"/>
+              <circle cx="80" cy="28" r="6" fill="none" stroke="#B85C3A" stroke-width="3"/>
+              <circle cx="114" cy="78" r="6" fill="none" stroke="#B85C3A" stroke-width="3"/>
+              <circle cx="50" cy="78" r="6" fill="none" stroke="#B85C3A" stroke-width="3"/>
+              <text x="80" y="108" text-anchor="middle" font-family="Inter, -apple-system, Helvetica, Arial, sans-serif" font-weight="500" font-size="24" fill="currentColor" letter-spacing="-0.3">Obliga<tspan font-family="Georgia, &#39;Times New Roman&#39;, serif" font-style="italic" fill="#B85C3A" dx="-0.04em">I</tspan></text>
+            </svg>
+          </span>
+          <small>md · 120px</small>
+        </div>
+
+        <div class="logo-rail__cell">
+          <span class="logo logo--lg">
+            <svg viewBox="0 0 160 124" xmlns="http://www.w3.org/2000/svg">
+              <line x1="80" y1="46" x2="80" y2="34" stroke="#B85C3A" stroke-width="3" stroke-linecap="round"/>
+              <line x1="88" y1="61" x2="109" y2="75" stroke="#B85C3A" stroke-width="3" stroke-linecap="round"/>
+              <line x1="72" y1="62" x2="55" y2="74" stroke="#B85C3A" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="80" cy="56" r="10" fill="#B85C3A"/>
+              <circle cx="80" cy="28" r="6" fill="none" stroke="#B85C3A" stroke-width="3"/>
+              <circle cx="114" cy="78" r="6" fill="none" stroke="#B85C3A" stroke-width="3"/>
+              <circle cx="50" cy="78" r="6" fill="none" stroke="#B85C3A" stroke-width="3"/>
+              <text x="80" y="108" text-anchor="middle" font-family="Inter, -apple-system, Helvetica, Arial, sans-serif" font-weight="500" font-size="24" fill="currentColor" letter-spacing="-0.3">Obliga<tspan font-family="Georgia, &#39;Times New Roman&#39;, serif" font-style="italic" fill="#B85C3A" dx="-0.04em">I</tspan></text>
+            </svg>
+          </span>
+          <small>lg · 160px</small>
+        </div>
+
+        <div class="logo-rail__cell">
+          <span class="logo logo--xl">
+            <svg viewBox="0 0 160 124" xmlns="http://www.w3.org/2000/svg">
+              <line x1="80" y1="46" x2="80" y2="34" stroke="#B85C3A" stroke-width="3" stroke-linecap="round"/>
+              <line x1="88" y1="61" x2="109" y2="75" stroke="#B85C3A" stroke-width="3" stroke-linecap="round"/>
+              <line x1="72" y1="62" x2="55" y2="74" stroke="#B85C3A" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="80" cy="56" r="10" fill="#B85C3A"/>
+              <circle cx="80" cy="28" r="6" fill="none" stroke="#B85C3A" stroke-width="3"/>
+              <circle cx="114" cy="78" r="6" fill="none" stroke="#B85C3A" stroke-width="3"/>
+              <circle cx="50" cy="78" r="6" fill="none" stroke="#B85C3A" stroke-width="3"/>
+              <text x="80" y="108" text-anchor="middle" font-family="Inter, -apple-system, Helvetica, Arial, sans-serif" font-weight="500" font-size="24" fill="currentColor" letter-spacing="-0.3">Obliga<tspan font-family="Georgia, &#39;Times New Roman&#39;, serif" font-style="italic" fill="#B85C3A" dx="-0.04em">I</tspan></text>
+            </svg>
+          </span>
+          <small>xl · 240px</small>
+        </div>
+
+        <div class="logo-rail__cell">
+          <span class="logo logo--2xl">
+            <svg viewBox="0 0 160 124" xmlns="http://www.w3.org/2000/svg">
+              <line x1="80" y1="46" x2="80" y2="34" stroke="#B85C3A" stroke-width="3" stroke-linecap="round"/>
+              <line x1="88" y1="61" x2="109" y2="75" stroke="#B85C3A" stroke-width="3" stroke-linecap="round"/>
+              <line x1="72" y1="62" x2="55" y2="74" stroke="#B85C3A" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="80" cy="56" r="10" fill="#B85C3A"/>
+              <circle cx="80" cy="28" r="6" fill="none" stroke="#B85C3A" stroke-width="3"/>
+              <circle cx="114" cy="78" r="6" fill="none" stroke="#B85C3A" stroke-width="3"/>
+              <circle cx="50" cy="78" r="6" fill="none" stroke="#B85C3A" stroke-width="3"/>
+              <text x="80" y="108" text-anchor="middle" font-family="Inter, -apple-system, Helvetica, Arial, sans-serif" font-weight="500" font-size="24" fill="currentColor" letter-spacing="-0.3">Obliga<tspan font-family="Georgia, &#39;Times New Roman&#39;, serif" font-style="italic" fill="#B85C3A" dx="-0.04em">I</tspan></text>
+            </svg>
+          </span>
+          <small>2xl · 320px</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ REGULATIONS ============ -->
+    <section class="ref-section" id="regulations" data-screen-label="06 Regulations">
+      <div class="ref-section__head">
+        <span class="eyebrow">Registry · 16 regulations</span>
+        <h2>Regulation colour registry</h2>
+        <p>Each regulation provides three tokens: primary (the data colour), a 10% light tint for badge backgrounds, and a brighter dark-mode stop. Sienna stays the brand — these colours encode data, never chrome.</p>
+      </div>
+
+      <div class="ref-subsection">
+        <h3>Current · in production</h3>
+        <div class="reg-grid">
+          <div class="reg-card" style="--reg-color: var(--color-lcr);">
+            <div class="reg-card__strip"></div>
+            <div class="reg-card__body">
+              <p class="reg-card__juris">EU · CRR II</p>
+              <h4 class="reg-card__name">LCR — Liquidity Coverage Ratio</h4>
+              <div class="reg-card__tints"><div class="reg-card__tint" style="background: var(--color-lcr);"></div><div class="reg-card__tint" style="background: var(--color-lcr-light);"></div><div class="reg-card__tint" style="background: var(--color-lcr-dark);"></div></div>
+              <p class="reg-card__id">--color-lcr · #0D3B66</p>
+            </div>
+          </div>
+
+          <div class="reg-card" style="--reg-color: var(--color-nsfr);">
+            <div class="reg-card__strip"></div>
+            <div class="reg-card__body">
+              <p class="reg-card__juris">EU · CRR II</p>
+              <h4 class="reg-card__name">NSFR — Net Stable Funding</h4>
+              <div class="reg-card__tints"><div class="reg-card__tint" style="background: var(--color-nsfr);"></div><div class="reg-card__tint" style="background: var(--color-nsfr-light);"></div><div class="reg-card__tint" style="background: var(--color-nsfr-dark);"></div></div>
+              <p class="reg-card__id">--color-nsfr · #62A87C</p>
+            </div>
+          </div>
+
+          <div class="reg-card" style="--reg-color: var(--color-almm);">
+            <div class="reg-card__strip"></div>
+            <div class="reg-card__body">
+              <p class="reg-card__juris">EU · CRR II</p>
+              <h4 class="reg-card__name">ALMM — Liquidity Monitoring</h4>
+              <div class="reg-card__tints"><div class="reg-card__tint" style="background: var(--color-almm);"></div><div class="reg-card__tint" style="background: var(--color-almm-light);"></div><div class="reg-card__tint" style="background: var(--color-almm-dark);"></div></div>
+              <p class="reg-card__id">--color-almm · #7B5EA7</p>
+            </div>
+          </div>
+
+          <div class="reg-card" style="--reg-color: var(--color-irl);">
+            <div class="reg-card__strip"></div>
+            <div class="reg-card__body">
+              <p class="reg-card__juris">LatAm · Internal</p>
+              <h4 class="reg-card__name">IRL — Internal Liquidity Reporting</h4>
+              <div class="reg-card__tints"><div class="reg-card__tint" style="background: var(--color-irl);"></div><div class="reg-card__tint" style="background: var(--color-irl-light);"></div><div class="reg-card__tint" style="background: var(--color-irl-dark);"></div></div>
+              <p class="reg-card__id">--color-irl · #C0622F</p>
+            </div>
+          </div>
+
+          <div class="reg-card" style="--reg-color: var(--color-peru);">
+            <div class="reg-card__strip"></div>
+            <div class="reg-card__body">
+              <p class="reg-card__juris">LatAm · Peru</p>
+              <h4 class="reg-card__name">SBS — Superintendencia de Banca</h4>
+              <div class="reg-card__tints"><div class="reg-card__tint" style="background: var(--color-peru);"></div><div class="reg-card__tint" style="background: var(--color-peru-light);"></div><div class="reg-card__tint" style="background: var(--color-peru-dark);"></div></div>
+              <p class="reg-card__id">--color-peru · #C2273E</p>
+            </div>
+          </div>
+
+          <div class="reg-card" style="--reg-color: var(--color-panama);">
+            <div class="reg-card__strip"></div>
+            <div class="reg-card__body">
+              <p class="reg-card__juris">LatAm · Panama</p>
+              <h4 class="reg-card__name">SBP — Superintendencia de Bancos</h4>
+              <div class="reg-card__tints"><div class="reg-card__tint" style="background: var(--color-panama);"></div><div class="reg-card__tint" style="background: var(--color-panama-light);"></div><div class="reg-card__tint" style="background: var(--color-panama-dark);"></div></div>
+              <p class="reg-card__id">--color-panama · #003087</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ref-subsection">
+        <h3>Placeholders · structure for the next 50</h3>
+        <div class="reg-grid">
+          <div class="reg-card" style="--reg-color: var(--color-uk-fra);"><div class="reg-card__strip"></div><div class="reg-card__body"><p class="reg-card__juris">UK</p><h4 class="reg-card__name">PRA · Fundamental Rules</h4><div class="reg-card__tints"><div class="reg-card__tint" style="background: var(--color-uk-fra);"></div><div class="reg-card__tint" style="background: var(--color-uk-fra-light);"></div><div class="reg-card__tint" style="background: var(--color-uk-fra-dark);"></div></div><p class="reg-card__id">--color-uk-fra</p></div></div>
+          <div class="reg-card" style="--reg-color: var(--color-japan-bsr);"><div class="reg-card__strip"></div><div class="reg-card__body"><p class="reg-card__juris">Japan</p><h4 class="reg-card__name">BOJ · Basel Standard Ratio</h4><div class="reg-card__tints"><div class="reg-card__tint" style="background: var(--color-japan-bsr);"></div><div class="reg-card__tint" style="background: var(--color-japan-bsr-light);"></div><div class="reg-card__tint" style="background: var(--color-japan-bsr-dark);"></div></div><p class="reg-card__id">--color-japan-bsr</p></div></div>
+          <div class="reg-card" style="--reg-color: var(--color-singapore-mas);"><div class="reg-card__strip"></div><div class="reg-card__body"><p class="reg-card__juris">Singapore</p><h4 class="reg-card__name">MAS · Notice 649</h4><div class="reg-card__tints"><div class="reg-card__tint" style="background: var(--color-singapore-mas);"></div><div class="reg-card__tint" style="background: var(--color-singapore-mas-light);"></div><div class="reg-card__tint" style="background: var(--color-singapore-mas-dark);"></div></div><p class="reg-card__id">--color-singapore-mas</p></div></div>
+          <div class="reg-card" style="--reg-color: var(--color-us-fed);"><div class="reg-card__strip"></div><div class="reg-card__body"><p class="reg-card__juris">United States</p><h4 class="reg-card__name">Federal Reserve · Reg YY</h4><div class="reg-card__tints"><div class="reg-card__tint" style="background: var(--color-us-fed);"></div><div class="reg-card__tint" style="background: var(--color-us-fed-light);"></div><div class="reg-card__tint" style="background: var(--color-us-fed-dark);"></div></div><p class="reg-card__id">--color-us-fed</p></div></div>
+          <div class="reg-card" style="--reg-color: var(--color-canada-osfi);"><div class="reg-card__strip"></div><div class="reg-card__body"><p class="reg-card__juris">Canada</p><h4 class="reg-card__name">OSFI · LAR</h4><div class="reg-card__tints"><div class="reg-card__tint" style="background: var(--color-canada-osfi);"></div><div class="reg-card__tint" style="background: var(--color-canada-osfi-light);"></div><div class="reg-card__tint" style="background: var(--color-canada-osfi-dark);"></div></div><p class="reg-card__id">--color-canada-osfi</p></div></div>
+          <div class="reg-card" style="--reg-color: var(--color-australia-apra);"><div class="reg-card__strip"></div><div class="reg-card__body"><p class="reg-card__juris">Australia</p><h4 class="reg-card__name">APRA · APS 210</h4><div class="reg-card__tints"><div class="reg-card__tint" style="background: var(--color-australia-apra);"></div><div class="reg-card__tint" style="background: var(--color-australia-apra-light);"></div><div class="reg-card__tint" style="background: var(--color-australia-apra-dark);"></div></div><p class="reg-card__id">--color-australia-apra</p></div></div>
+          <div class="reg-card" style="--reg-color: var(--color-switzerland-finma);"><div class="reg-card__strip"></div><div class="reg-card__body"><p class="reg-card__juris">Switzerland</p><h4 class="reg-card__name">FINMA · LCR</h4><div class="reg-card__tints"><div class="reg-card__tint" style="background: var(--color-switzerland-finma);"></div><div class="reg-card__tint" style="background: var(--color-switzerland-finma-light);"></div><div class="reg-card__tint" style="background: var(--color-switzerland-finma-dark);"></div></div><p class="reg-card__id">--color-switzerland-finma</p></div></div>
+          <div class="reg-card" style="--reg-color: var(--color-hongkong-hkma);"><div class="reg-card__strip"></div><div class="reg-card__body"><p class="reg-card__juris">Hong Kong</p><h4 class="reg-card__name">HKMA · LM-2</h4><div class="reg-card__tints"><div class="reg-card__tint" style="background: var(--color-hongkong-hkma);"></div><div class="reg-card__tint" style="background: var(--color-hongkong-hkma-light);"></div><div class="reg-card__tint" style="background: var(--color-hongkong-hkma-dark);"></div></div><p class="reg-card__id">--color-hongkong-hkma</p></div></div>
+          <div class="reg-card" style="--reg-color: var(--color-mexico-cnbv);"><div class="reg-card__strip"></div><div class="reg-card__body"><p class="reg-card__juris">Mexico</p><h4 class="reg-card__name">CNBV · CCL</h4><div class="reg-card__tints"><div class="reg-card__tint" style="background: var(--color-mexico-cnbv);"></div><div class="reg-card__tint" style="background: var(--color-mexico-cnbv-light);"></div><div class="reg-card__tint" style="background: var(--color-mexico-cnbv-dark);"></div></div><p class="reg-card__id">--color-mexico-cnbv</p></div></div>
+          <div class="reg-card" style="--reg-color: var(--color-brazil-bcb);"><div class="reg-card__strip"></div><div class="reg-card__body"><p class="reg-card__juris">Brazil</p><h4 class="reg-card__name">BCB · LCR Resolution</h4><div class="reg-card__tints"><div class="reg-card__tint" style="background: var(--color-brazil-bcb);"></div><div class="reg-card__tint" style="background: var(--color-brazil-bcb-light);"></div><div class="reg-card__tint" style="background: var(--color-brazil-bcb-dark);"></div></div><p class="reg-card__id">--color-brazil-bcb</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ JURISDICTIONS ============ -->
+    <section class="ref-section" id="jurisdictions" data-screen-label="07 Jurisdictions">
+      <div class="ref-section__head">
+        <span class="eyebrow">Registry · jurisdictions</span>
+        <h2>Jurisdictional grouping</h2>
+        <p>Region-level tokens for sidebar groups, filter chips and slide section eyebrows. New regions append a token triplet and a section modifier.</p>
+      </div>
+
+      <div class="jurisdiction-section jurisdiction-section--eu">
+        <div class="jurisdiction-section__head">
+          <span class="jurisdiction-section__eyebrow">European Union</span>
+          <span class="jurisdiction-section__title">EBA · CRR II framework</span>
+          <span class="t-small ml-auto t-muted">3 regulations</span>
+        </div>
+        <div class="demo-row">
+          <span class="badge--regulation badge--lcr">LCR</span>
+          <span class="badge--regulation badge--nsfr">NSFR</span>
+          <span class="badge--regulation badge--almm">ALMM</span>
+        </div>
+      </div>
+      <div class="jurisdiction-section jurisdiction-section--latam">
+        <div class="jurisdiction-section__head">
+          <span class="jurisdiction-section__eyebrow">Latin America</span>
+          <span class="jurisdiction-section__title">National regulators &amp; internal</span>
+          <span class="t-small ml-auto t-muted">3 regulations</span>
+        </div>
+        <div class="demo-row">
+          <span class="badge--regulation badge--irl">IRL</span>
+          <span class="badge--regulation badge--peru">Peru SBS</span>
+          <span class="badge--regulation badge--panama">Panama SBP</span>
+          <span class="badge--regulation badge--mexico-cnbv">Mexico CNBV</span>
+          <span class="badge--regulation badge--brazil-bcb">Brazil BCB</span>
+        </div>
+      </div>
+      <div class="jurisdiction-section jurisdiction-section--asia">
+        <div class="jurisdiction-section__head">
+          <span class="jurisdiction-section__eyebrow">Asia-Pacific</span>
+          <span class="jurisdiction-section__title">Roadmap · placeholders</span>
+          <span class="t-small ml-auto t-muted">4 regulations</span>
+        </div>
+        <div class="demo-row">
+          <span class="badge--regulation badge--japan-bsr">Japan BSR</span>
+          <span class="badge--regulation badge--singapore-mas">Singapore MAS</span>
+          <span class="badge--regulation badge--hongkong-hkma">Hong Kong HKMA</span>
+          <span class="badge--regulation badge--australia-apra">Australia APRA</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SCOPING ============ -->
+    <section class="ref-section" id="scoping" data-screen-label="07b Scoping">
+      <div class="ref-section__head">
+        <span class="eyebrow">Registry · scaling to 50+</span>
+        <h2>Jurisdiction → regulation, in one control</h2>
+        <p>A single combined control. <b>Top row</b>: jurisdictions, with the EU treated as one. <b>Bottom row</b>: the active regulations as coloured pills, plus an <code class="code-inline">+ Add</code> button that opens a searchable popover scoped to whichever jurisdiction is active. Picking a jurisdiction filters both the pills and the popover.</p>
+      </div>
+
+      <!-- Anatomy callout -->
+      <div class="alert alert--info mb-6">
+        <div>
+          <div class="alert__title">One control, three jobs</div>
+          <div>The chips along the top scope everything below to one jurisdiction (EU counts as one). The coloured pills underneath show what's active and let you dismiss any of them with <code class="code-inline">×</code>. The <code class="code-inline">+ Add regulation</code> slot opens a searchable popover already filtered to the active jurisdiction — so you never scroll through 50 entries looking for the one you need.</div>
+        </div>
+      </div>
+
+      <!-- COMBINED CONTROL -->
+      <div class="ref-subsection">
+        <h3>The combined control · live</h3>
+
+        <div class="demo" style="overflow: visible;">
+          <div id="scope-control">
+            <div class="scope-bar">
+              <!-- Top row: jurisdictions -->
+              <div class="scope-bar__row" data-scope-jurisdictions>
+                <span class="scope-bar__label">Jurisdiction</span>
+                <!-- chips rendered by JS -->
+              </div>
+              <hr class="divider" style="margin: 0;"/>
+              <!-- Bottom row: pills + add trigger -->
+              <div class="scope-bar__row" style="min-height: 44px; align-items: center;">
+                <span class="scope-bar__label">Regulations</span>
+                <div class="flex-row gap-2 flex-wrap" data-scope-pills style="align-items: center;"></div>
+                <div class="combobox combobox--inline" data-scope-add>
+                  <button type="button" class="scope-pill__add" data-scope-add-trigger>+ Add regulation</button>
+                  <div class="combobox__panel" role="listbox">
+                    <div class="combobox__search">
+                      <svg class="combobox__search__icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/>
+                        <line x1="11" y1="11" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                      </svg>
+                      <input type="text" placeholder="Search regulations…" data-scope-search/>
+                    </div>
+                    <div class="combobox__list" data-scope-list></div>
+                    <div class="combobox__footer">
+                      <span class="combobox__footer__count" data-scope-count></span>
+                      <button type="button" class="btn btn-ghost btn--size-sm" data-scope-close>Done</button>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="scope-pill__clear" data-scope-clear>Clear all</button>
+              </div>
+            </div>
+          </div>
+
+          <p class="t-caption t-muted m-0 mt-4">Pick a jurisdiction (top row) to scope the pills and the <code class="code-inline">+ Add</code> popover below. The EU is one jurisdiction; every other country is its own. Pills carry their registry colour. The <code class="code-inline">×</code> on a pill removes it from the active scope.</p>
+        </div>
+      </div>
+
+      <!-- DECISION GUIDE -->
+      <div class="ref-subsection">
+        <h3>When to use which</h3>
+        <div class="table-wrap">
+          <table class="table">
+            <thead class="table-header">
+              <tr>
+                <th>Surface</th>
+                <th>Primary control</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Global register</b></td>
+                <td>Full combined control</td>
+                <td class="t-small t-muted">Jurisdiction chip row across the top, pills + Add below the table head.</td>
+              </tr>
+              <tr>
+                <td><b>Dashboard</b></td>
+                <td>Pills row only (read-only)</td>
+                <td class="t-small t-muted">Inherits scope from the previous screen · chip row hidden.</td>
+              </tr>
+              <tr>
+                <td><b>Conflict graph</b></td>
+                <td>Combined control, multi-select biased to 2–4 pills</td>
+                <td class="t-small t-muted">Users typically compare two regulations across two jurisdictions.</td>
+              </tr>
+              <tr>
+                <td><b>Detail page</b></td>
+                <td>Pill row only (no chips, no Add)</td>
+                <td class="t-small t-muted">The pill reads as a header chip for the regulation being viewed.</td>
+              </tr>
+              <tr>
+                <td><b>Slide / report cover</b></td>
+                <td>Static badges</td>
+                <td class="t-small t-muted">No interactivity needed.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ BUTTONS ============ -->
+    <section class="ref-section" id="buttons" data-screen-label="08 Buttons">
+      <div class="ref-section__head">
+        <span class="eyebrow">Components · action</span>
+        <h2>Buttons</h2>
+        <p>Rectangular, no radius. Primary, secondary, ghost and destructive — each with three sizes and a block variant.</p>
+      </div>
+
+      <div class="demo">
+        <div class="label-strip"><span class="t-label">Variants · medium</span></div>
+        <div class="demo-row demo-row--centred">
+          <button type="button" class="btn btn-primary">Validate register</button>
+          <button type="button" class="btn btn-secondary">Refresh sources</button>
+          <button type="button" class="btn btn-ghost">Cancel</button>
+          <button type="button" class="btn btn-destructive">Mark conflicted</button>
+          <button type="button" class="btn btn-primary btn-icon" aria-label="Settings">⚙</button>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="label-strip"><span class="t-label">Sizes · sm · md · lg</span></div>
+        <div class="demo-row demo-row--centred">
+          <button type="button" class="btn btn-primary btn--size-sm">Small</button>
+          <button type="button" class="btn btn-primary btn--size-md">Medium</button>
+          <button type="button" class="btn btn-primary btn--size-lg">Large</button>
+          <span style="width: 8px;"></span>
+          <button type="button" class="btn btn-secondary btn--size-sm">Small</button>
+          <button type="button" class="btn btn-secondary btn--size-md">Medium</button>
+          <button type="button" class="btn btn-secondary btn--size-lg">Large</button>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="label-strip"><span class="t-label">States · default · disabled · block</span></div>
+        <div class="demo-row demo-row--centred">
+          <button type="button" class="btn btn-primary">Default</button>
+          <button type="button" class="btn btn-primary" disabled>Disabled</button>
+          <button type="button" class="btn btn-secondary" disabled>Disabled</button>
+        </div>
+        <div style="margin-top: var(--space-3);">
+          <button type="button" class="btn btn-primary btn--block">Block-level — fills container</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FORMS ============ -->
+    <section class="ref-section" id="forms" data-screen-label="09 Forms">
+      <div class="ref-section__head">
+        <span class="eyebrow">Components · form</span>
+        <h2>Forms</h2>
+        <p>Inputs, selects, textareas, checkboxes and radios — all 2px radius, sienna focus, sienna error.</p>
+      </div>
+
+      <div class="demo">
+        <div class="grid-3" style="gap: var(--space-4);">
+          <div class="field">
+            <label class="label" for="r-id">Obligation ID</label>
+            <input class="input" id="r-id" type="text" value="OBLIG-LCR-0412" />
+            <span class="helper">Auto-generated · do not change</span>
+          </div>
+          <div class="field">
+            <label class="label" for="r-juris">Jurisdiction</label>
+            <select class="select" id="r-juris">
+              <option>European Union</option>
+              <option>Peru</option>
+              <option>Panama</option>
+              <option>Mexico</option>
+            </select>
+            <span class="helper">Determines applicable framework</span>
+          </div>
+          <div class="field field--error">
+            <label class="label" for="r-deadline">Deadline</label>
+            <input class="input" id="r-deadline" type="text" value="32 / 11 / 2024" aria-invalid="true"/>
+            <span class="helper">Not a valid date</span>
+          </div>
+          <div class="field" style="grid-column: span 3;">
+            <label class="label" for="r-summary">Obligation summary</label>
+            <textarea class="textarea" id="r-summary">Hold high-quality liquid assets equivalent to net cash outflows over a 30-day stress scenario, as set out in Article 412 of Regulation (EU) 575/2013.</textarea>
+          </div>
+        </div>
+
+        <hr class="divider" style="margin: var(--space-4) 0;"/>
+
+        <div class="demo-row gap-6">
+          <label class="check-row"><input type="checkbox" class="checkbox" checked/><span>Auto-link controls</span></label>
+          <label class="check-row"><input type="checkbox" class="checkbox"/><span>Notify owner on conflict</span></label>
+          <label class="check-row"><input type="checkbox" class="checkbox" disabled/><span>Archive</span></label>
+          <span style="width: 16px;"></span>
+          <label class="check-row"><input type="radio" class="radio" name="d" checked/><span>Manual review</span></label>
+          <label class="check-row"><input type="radio" class="radio" name="d"/><span>Automatic</span></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CARDS ============ -->
+    <section class="ref-section" id="cards" data-screen-label="10 Cards">
+      <div class="ref-section__head">
+        <span class="eyebrow">Components · containment</span>
+        <h2>Cards &amp; regulation cards</h2>
+        <p>Translucent at rest, solid on hover, 2px radius. Regulation cards add a coloured strip that keys off the registry.</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <h4 class="t-h4 mb-2">Default</h4>
+          <p class="t-body m-0">Resting card. Hover lifts and washes with a sienna tint.</p>
+        </div>
+        <div class="card selected">
+          <h4 class="t-h4 mb-2">Selected</h4>
+          <p class="t-body m-0">Sienna 1.5px border, sienna glow, lifted 2px.</p>
+        </div>
+        <div class="card card--compact">
+          <h4 class="t-h4 mb-2">Compact</h4>
+          <p class="t-body m-0">Tight padding, identical lift behaviour.</p>
+        </div>
+        <div class="card card--elevated">
+          <h4 class="t-h4 mb-2">Elevated</h4>
+          <p class="t-body m-0">Slightly heavier shadow at rest. Use sparingly.</p>
+        </div>
+        <div class="card card--flat">
+          <h4 class="t-h4 mb-2">Flat</h4>
+          <p class="t-body m-0">No shadow, no hover lift. For inline groups.</p>
+        </div>
+        <div class="card card--stat">
+          <div class="stat-num">87%</div>
+          <div class="stat-label">Validation score</div>
+        </div>
+      </div>
+
+      <div class="grid-3" style="margin-top: var(--space-4);">
+        <div class="card regulation-card regulation-card--lcr">
+          <p class="regulation-card__id">EU · LCR-0412</p>
+          <h4 class="regulation-card__title">30-day stress liquidity buffer</h4>
+          <p class="t-small mt-3 mb-4">Article 412 · CRR II · Delegated Regulation 2015/61</p>
+          <div class="demo-row">
+            <span class="badge--regulation badge--lcr">LCR</span>
+            <span class="badge--status badge--status-active">Active</span>
+          </div>
+        </div>
+        <div class="card regulation-card regulation-card--peru">
+          <p class="regulation-card__id">PE · SBS-N-9075</p>
+          <h4 class="regulation-card__title">Reporte de liquidez diaria</h4>
+          <p class="t-small mt-3 mb-4">Resolución SBS N° 9075-2012 · Anexo 15-A</p>
+          <div class="demo-row">
+            <span class="badge--regulation badge--peru">Peru SBS</span>
+            <span class="badge--status badge--status-conflicted">Conflicted</span>
+          </div>
+        </div>
+        <div class="card regulation-card regulation-card--nsfr">
+          <p class="regulation-card__id">EU · NSFR-0428</p>
+          <h4 class="regulation-card__title">One-year stable funding</h4>
+          <p class="t-small mt-3 mb-4">Article 428a-az · CRR II</p>
+          <div class="demo-row">
+            <span class="badge--regulation badge--nsfr">NSFR</span>
+            <span class="badge--status badge--status-implementing">Implementing</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ BADGES & STATUS ============ -->
+    <section class="ref-section" id="badges" data-screen-label="11 Badges">
+      <div class="ref-section__head">
+        <span class="eyebrow">Components · signalling</span>
+        <h2>Badges, tags, status &amp; regulation labels</h2>
+        <p>Three families: status badges, regulation badges, and regulation labels (abbreviation + full name).</p>
+      </div>
+
+      <div class="demo">
+        <div class="label-strip"><span class="t-label">Status badges</span></div>
+        <div class="demo-row">
+          <span class="badge--status badge--status-active">Active</span>
+          <span class="badge--status badge--status-conflicted">Conflicted</span>
+          <span class="badge--status badge--status-implementing">Implementing</span>
+          <span class="badge--status badge--status-pending">Pending</span>
+          <span class="badge--status badge--status-inactive">Inactive</span>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="label-strip"><span class="t-label">Regulation badges · all 16</span></div>
+        <div class="demo-row">
+          <span class="badge--regulation badge--lcr">LCR</span>
+          <span class="badge--regulation badge--nsfr">NSFR</span>
+          <span class="badge--regulation badge--almm">ALMM</span>
+          <span class="badge--regulation badge--irl">IRL</span>
+          <span class="badge--regulation badge--peru">Peru SBS</span>
+          <span class="badge--regulation badge--panama">Panama SBP</span>
+          <span class="badge--regulation badge--uk-fra">UK FRA</span>
+          <span class="badge--regulation badge--japan-bsr">Japan BSR</span>
+          <span class="badge--regulation badge--singapore-mas">Singapore MAS</span>
+          <span class="badge--regulation badge--us-fed">US Fed</span>
+          <span class="badge--regulation badge--canada-osfi">Canada OSFI</span>
+          <span class="badge--regulation badge--australia-apra">Australia APRA</span>
+          <span class="badge--regulation badge--switzerland-finma">Swiss FINMA</span>
+          <span class="badge--regulation badge--hongkong-hkma">HK HKMA</span>
+          <span class="badge--regulation badge--mexico-cnbv">Mexico CNBV</span>
+          <span class="badge--regulation badge--brazil-bcb">Brazil BCB</span>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="label-strip"><span class="t-label">Regulation labels · used in titles &amp; row leads</span></div>
+        <div class="flex-col gap-3">
+          <span class="regulation-label regulation-label--lcr"><em>EU</em> LCR <small>Liquidity Coverage Ratio · Article 412 CRR II</small></span>
+          <span class="regulation-label regulation-label--peru"><em>PE</em> SBS N-9075 <small>Reporte de liquidez · Anexo 15-A</small></span>
+          <span class="regulation-label regulation-label--singapore-mas"><em>SG</em> MAS 649 <small>Minimum liquid assets · Notice 649</small></span>
+          <span class="regulation-label regulation-label--brazil-bcb"><em>BR</em> BCB Res. 4090 <small>Razão de Liquidez de Curto Prazo</small></span>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="label-strip"><span class="t-label">Tags · jurisdiction · framework · domain</span></div>
+        <div class="demo-row">
+          <span class="tag tag-jurisdiction">European Union</span>
+          <span class="tag tag-jurisdiction">Peru</span>
+          <span class="tag tag-framework">CRR II</span>
+          <span class="tag tag-framework">Basel III</span>
+          <span class="tag tag-domain">Liquidity</span>
+          <span class="tag tag-domain">Capital</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TABLES ============ -->
+    <section class="ref-section" id="tables" data-screen-label="12 Tables">
+      <div class="ref-section__head">
+        <span class="eyebrow">Components · data</span>
+        <h2>Tables</h2>
+        <p>No zebra by default — but a <code class="code-inline">.table--zebra</code> variant exists. Numeric cells use tabular figures. Hover and selection use sienna tints.</p>
+      </div>
+
+      <div class="table-wrap">
+        <table class="table">
+          <thead class="table-header">
+            <tr>
+              <th>ID</th>
+              <th>Regulation</th>
+              <th>Obligation</th>
+              <th>Status</th>
+              <th>Completeness</th>
+              <th class="numeric">Updated</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">OBLIG-LCR-0412</td>
+              <td><span class="badge--regulation badge--lcr">LCR</span></td>
+              <td>30-day stress liquidity buffer</td>
+              <td><span class="badge--status badge--status-active">Active</span></td>
+              <td>
+                <div class="flex-row gap-3" style="align-items: center;">
+                  <div class="completeness-bar" style="flex: 1; max-width: 120px;"><div class="completeness-bar__fill" style="--value: 92%;"></div></div>
+                  <span class="t-small t-numeric">92%</span>
+                </div>
+              </td>
+              <td class="numeric mono">2024-11-04</td>
+            </tr>
+            <tr>
+              <td class="mono">OBLIG-NSFR-0428</td>
+              <td><span class="badge--regulation badge--nsfr">NSFR</span></td>
+              <td>One-year stable funding ratio</td>
+              <td><span class="badge--status badge--status-implementing">Implementing</span></td>
+              <td>
+                <div class="flex-row gap-3" style="align-items: center;">
+                  <div class="completeness-bar completeness-bar--warning" style="flex: 1; max-width: 120px;"><div class="completeness-bar__fill" style="--value: 58%;"></div></div>
+                  <span class="t-small t-numeric">58%</span>
+                </div>
+              </td>
+              <td class="numeric mono">2024-11-03</td>
+            </tr>
+            <tr class="is-selected">
+              <td class="mono">OBLIG-IRL-1140</td>
+              <td><span class="badge--regulation badge--irl">IRL</span></td>
+              <td>Internal daily liquidity reconciliation</td>
+              <td><span class="badge--status badge--status-conflicted">Conflicted</span></td>
+              <td>
+                <div class="flex-row gap-3" style="align-items: center;">
+                  <div class="completeness-bar completeness-bar--danger" style="flex: 1; max-width: 120px;"><div class="completeness-bar__fill" style="--value: 34%;"></div></div>
+                  <span class="t-small t-numeric">34%</span>
+                </div>
+              </td>
+              <td class="numeric mono">2024-10-29</td>
+            </tr>
+            <tr>
+              <td class="mono">OBLIG-PERU-9075</td>
+              <td><span class="badge--regulation badge--peru">Peru SBS</span></td>
+              <td>Reporte de liquidez diaria · Anexo 15-A</td>
+              <td><span class="badge--status badge--status-active">Active</span></td>
+              <td>
+                <div class="flex-row gap-3" style="align-items: center;">
+                  <div class="completeness-bar completeness-bar--success" style="flex: 1; max-width: 120px;"><div class="completeness-bar__fill" style="--value: 100%;"></div></div>
+                  <span class="t-small t-numeric">100%</span>
+                </div>
+              </td>
+              <td class="numeric mono">2024-11-01</td>
+            </tr>
+            <tr>
+              <td class="mono">OBLIG-PANAMA-014</td>
+              <td><span class="badge--regulation badge--panama">Panama SBP</span></td>
+              <td>Coeficiente de cobertura mensual</td>
+              <td><span class="badge--status badge--status-pending">Pending</span></td>
+              <td>
+                <div class="flex-row gap-3" style="align-items: center;">
+                  <div class="completeness-bar" style="flex: 1; max-width: 120px;"><div class="completeness-bar__fill" style="--value: 71%;"></div></div>
+                  <span class="t-small t-numeric">71%</span>
+                </div>
+              </td>
+              <td class="numeric mono">2024-10-24</td>
+            </tr>
+            <tr>
+              <td class="mono">OBLIG-ALMM-0415</td>
+              <td><span class="badge--regulation badge--almm">ALMM</span></td>
+              <td>Concentration of funding · maturity ladder</td>
+              <td><span class="badge--status badge--status-implementing">Implementing</span></td>
+              <td>
+                <div class="flex-row gap-3" style="align-items: center;">
+                  <div class="completeness-bar" style="flex: 1; max-width: 120px;"><div class="completeness-bar__fill" style="--value: 64%;"></div></div>
+                  <span class="t-small t-numeric">64%</span>
+                </div>
+              </td>
+              <td class="numeric mono">2024-10-22</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ CHARTS ============ -->
+    <section class="ref-section" id="charts" data-screen-label="13 Charts">
+      <div class="ref-section__head">
+        <span class="eyebrow">Components · data viz</span>
+        <h2>Charts</h2>
+        <p>Bars and lines pick up regulation colours via <code class="code-inline">.chart-bar--{reg}</code>. Axes, gridlines and tooltips are neutralised so the data carries colour.</p>
+      </div>
+
+      <div class="demo">
+        <div class="demo-chart">
+          <div>
+            <div class="label-strip"><span class="t-label">Obligations by regulation · last quarter</span><span class="t-small t-muted">2024 · Q3</span></div>
+            <svg class="chart-svg" viewBox="0 0 600 240" preserveAspectRatio="none" aria-label="Obligations by regulation">
+              <!-- gridlines -->
+              <line class="chart-gridline" x1="40" y1="40"  x2="600" y2="40"/>
+              <line class="chart-gridline" x1="40" y1="90"  x2="600" y2="90"/>
+              <line class="chart-gridline" x1="40" y1="140" x2="600" y2="140"/>
+              <line class="chart-gridline" x1="40" y1="190" x2="600" y2="190"/>
+              <!-- axis -->
+              <g class="chart-axis"><line x1="40" y1="200" x2="600" y2="200"/></g>
+              <!-- bars (values: 87, 64, 38, 71, 52, 29) -->
+              <rect class="chart-bar chart-bar--lcr"               x="60"  y="60"  width="60" height="140"/>
+              <rect class="chart-bar chart-bar--nsfr"              x="150" y="100" width="60" height="100"/>
+              <rect class="chart-bar chart-bar--almm"              x="240" y="138" width="60" height="62"/>
+              <rect class="chart-bar chart-bar--irl"               x="330" y="86"  width="60" height="114"/>
+              <rect class="chart-bar chart-bar--peru"              x="420" y="115" width="60" height="85"/>
+              <rect class="chart-bar chart-bar--panama"            x="510" y="155" width="60" height="45"/>
+              <!-- labels -->
+              <text class="chart-label" x="90"  y="218" text-anchor="middle">LCR</text>
+              <text class="chart-label" x="180" y="218" text-anchor="middle">NSFR</text>
+              <text class="chart-label" x="270" y="218" text-anchor="middle">ALMM</text>
+              <text class="chart-label" x="360" y="218" text-anchor="middle">IRL</text>
+              <text class="chart-label" x="450" y="218" text-anchor="middle">Peru</text>
+              <text class="chart-label" x="540" y="218" text-anchor="middle">Panama</text>
+              <!-- values -->
+              <text class="chart-value" x="90"  y="52"  text-anchor="middle">87</text>
+              <text class="chart-value" x="180" y="92"  text-anchor="middle">64</text>
+              <text class="chart-value" x="270" y="130" text-anchor="middle">38</text>
+              <text class="chart-value" x="360" y="78"  text-anchor="middle">71</text>
+              <text class="chart-value" x="450" y="107" text-anchor="middle">52</text>
+              <text class="chart-value" x="540" y="147" text-anchor="middle">29</text>
+              <!-- y-axis ticks -->
+              <text class="chart-label" x="32" y="44"  text-anchor="end">100</text>
+              <text class="chart-label" x="32" y="94"  text-anchor="end">75</text>
+              <text class="chart-label" x="32" y="144" text-anchor="end">50</text>
+              <text class="chart-label" x="32" y="194" text-anchor="end">25</text>
+            </svg>
+            <div class="chart-legend">
+              <span class="chart-legend__item"><span class="chart-legend__swatch" style="background: var(--color-lcr);"></span>LCR</span>
+              <span class="chart-legend__item"><span class="chart-legend__swatch" style="background: var(--color-nsfr);"></span>NSFR</span>
+              <span class="chart-legend__item"><span class="chart-legend__swatch" style="background: var(--color-almm);"></span>ALMM</span>
+              <span class="chart-legend__item"><span class="chart-legend__swatch" style="background: var(--color-irl);"></span>IRL</span>
+              <span class="chart-legend__item"><span class="chart-legend__swatch" style="background: var(--color-peru);"></span>Peru SBS</span>
+              <span class="chart-legend__item"><span class="chart-legend__swatch" style="background: var(--color-panama);"></span>Panama SBP</span>
+            </div>
+          </div>
+
+          <div>
+            <div class="label-strip"><span class="t-label">Tooltip surface</span></div>
+            <div class="chart-tooltip" style="position: static; box-shadow: var(--shadow-popover);">
+              <div class="chart-tooltip__label">LCR · EU</div>
+              <div class="chart-tooltip__value">87 obligations</div>
+              <hr class="divider" style="margin: 8px 0;"/>
+              <div class="t-small t-muted" style="line-height: 1.5;">
+                Article 412 (CRR II)<br/>
+                Last updated · 4 Nov 2024
+              </div>
+            </div>
+
+            <div style="margin-top: var(--space-6);">
+              <div class="label-strip"><span class="t-label">Inline trend</span></div>
+              <svg class="chart-svg" style="height: 80px;" viewBox="0 0 320 80" preserveAspectRatio="none">
+                <path class="chart-area" d="M0,60 L40,52 L80,46 L120,40 L160,34 L200,30 L240,24 L280,20 L320,16 L320,80 L0,80 Z"/>
+                <path class="chart-line" d="M0,60 L40,52 L80,46 L120,40 L160,34 L200,30 L240,24 L280,20 L320,16"/>
+                <circle class="chart-dot" cx="320" cy="16" r="3.5"/>
+              </svg>
+              <p class="t-caption mt-2 mb-0">Validated obligations · 12-week trend</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ GRAPHS ============ -->
+    <section class="ref-section" id="graphs" data-screen-label="14 Graphs">
+      <div class="ref-section__head">
+        <span class="eyebrow">Components · data viz</span>
+        <h2>Graphs · conflict network</h2>
+        <p>For Reagraph and bespoke D3 force layouts. Nodes pick up their regulation stroke; conflict edges use <code class="code-inline">.graph-edge--conflict</code>.</p>
+      </div>
+
+      <div class="demo demo--inset">
+        <svg class="graph-svg" viewBox="0 0 800 320">
+          <!-- edges first -->
+          <line class="graph-edge" x1="150" y1="160" x2="320" y2="80"/>
+          <line class="graph-edge" x1="150" y1="160" x2="320" y2="240"/>
+          <line class="graph-edge" x1="320" y1="80"  x2="500" y2="160"/>
+          <line class="graph-edge" x1="320" y1="240" x2="500" y2="160"/>
+          <line class="graph-edge--conflict graph-edge" x1="500" y1="160" x2="680" y2="80"/>
+          <line class="graph-edge--conflict graph-edge" x1="500" y1="160" x2="680" y2="240"/>
+          <line class="graph-edge" x1="320" y1="80"  x2="320" y2="240"/>
+
+          <!-- nodes -->
+          <circle class="graph-node graph-node--lcr"   cx="150" cy="160" r="32"/>
+          <text   class="graph-label" x="150" y="165" text-anchor="middle">LCR</text>
+          <circle class="graph-node graph-node--nsfr"  cx="320" cy="80"  r="28"/>
+          <text   class="graph-label" x="320" y="85"  text-anchor="middle">NSFR</text>
+          <circle class="graph-node graph-node--almm"  cx="320" cy="240" r="28"/>
+          <text   class="graph-label" x="320" y="245" text-anchor="middle">ALMM</text>
+          <circle class="graph-node graph-node--irl graph-node--filled" cx="500" cy="160" r="36" style="fill: var(--color-irl); stroke: var(--color-irl);"/>
+          <text   class="graph-label" x="500" y="166" text-anchor="middle" style="fill: #FFF;">IRL</text>
+          <circle class="graph-node graph-node--peru"   cx="680" cy="80"  r="26"/>
+          <text   class="graph-label" x="680" y="85"  text-anchor="middle">Peru</text>
+          <circle class="graph-node graph-node--panama" cx="680" cy="240" r="26"/>
+          <text   class="graph-label" x="680" y="245" text-anchor="middle">Pan.</text>
+        </svg>
+
+        <div class="flex-between mt-4">
+          <div class="chart-legend">
+            <span class="chart-legend__item"><span style="display:inline-block; width: 14px; height: 2px; background: var(--border-hover);"></span>Linked obligation</span>
+            <span class="chart-legend__item"><span style="display:inline-block; width: 14px; height: 2px; background: var(--status-conflicted);"></span>Conflict edge</span>
+          </div>
+          <span class="t-small t-muted">2 conflicts detected · centred on IRL</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ COMPLETENESS ============ -->
+    <section class="ref-section" id="completeness" data-screen-label="15 Completeness">
+      <div class="ref-section__head">
+        <span class="eyebrow">Components · status</span>
+        <h2>Completeness &amp; validation scores</h2>
+        <p>Bars accept a CSS variable <code class="code-inline">--value: 0%</code> so progress can be data-bound. Scores accept colour modifiers.</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="t-label mb-2">Coverage · EU</div>
+          <div class="validation-score validation-score--high">94<small>%</small></div>
+          <div class="completeness-bar completeness-bar--success mt-4"><div class="completeness-bar__fill" style="--value: 94%;"></div></div>
+          <p class="t-small t-muted mt-3 mb-0">87 of 92 obligations linked to controls</p>
+        </div>
+        <div class="card">
+          <div class="t-label mb-2">Coverage · LatAm</div>
+          <div class="validation-score validation-score--medium">71<small>%</small></div>
+          <div class="completeness-bar completeness-bar--warning mt-4"><div class="completeness-bar__fill" style="--value: 71%;"></div></div>
+          <p class="t-small t-muted mt-3 mb-0">52 of 73 obligations linked to controls</p>
+        </div>
+        <div class="card">
+          <div class="t-label mb-2">Coverage · APAC roadmap</div>
+          <div class="validation-score validation-score--low">28<small>%</small></div>
+          <div class="completeness-bar completeness-bar--danger mt-4"><div class="completeness-bar__fill" style="--value: 28%;"></div></div>
+          <p class="t-small t-muted mt-3 mb-0">12 of 43 obligations linked to controls</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ALERTS ============ -->
+    <section class="ref-section" id="alerts" data-screen-label="16 Alerts">
+      <div class="ref-section__head">
+        <span class="eyebrow">Components · feedback</span>
+        <h2>Alerts, tooltips, modals</h2>
+        <p>Inline feedback surfaces. 3px left strip, sienna by default, status-tinted on demand.</p>
+      </div>
+
+      <div class="flex-col gap-3">
+        <div class="alert alert--info">
+          <div>
+            <div class="alert__title">3 new regulatory updates</div>
+            <div>EBA published amendments to Delegated Regulation 2015/61 on 4 November. Review impact on Articles 412 and 419 before next reporting cycle.</div>
+          </div>
+        </div>
+        <div class="alert alert--warning">
+          <div>
+            <div class="alert__title">Validation incomplete</div>
+            <div>OBLIG-IRL-1140 has no responsible owner. Assign before promoting to Active.</div>
+          </div>
+        </div>
+        <div class="alert alert--error">
+          <div>
+            <div class="alert__title">Conflict detected</div>
+            <div>LCR Article 412 and SBS Resolution N-9075 disagree on intraday liquidity reporting frequency. Reconcile or annotate.</div>
+          </div>
+        </div>
+        <div class="alert alert--success">
+          <div>
+            <div class="alert__title">Sources refreshed</div>
+            <div>17 documents fetched · 0 errors · last sync 14 minutes ago.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TABS & MENU ============ -->
+    <section class="ref-section" id="tabs" data-screen-label="17 Tabs">
+      <div class="ref-section__head">
+        <span class="eyebrow">Components · navigation</span>
+        <h2>Tabs, breadcrumbs, menu</h2>
+        <p>Rectangular tabs with a 2px sienna indicator. Menus are sienna-bordered with a soft popover shadow.</p>
+      </div>
+
+      <div class="demo">
+        <div class="label-strip"><span class="t-label">Tabs</span></div>
+        <div class="tabs">
+          <button type="button" class="tab is-active">Register</button>
+          <button type="button" class="tab">Sources</button>
+          <button type="button" class="tab">Conflicts</button>
+          <button type="button" class="tab">Audit trail</button>
+          <button type="button" class="tab">Settings</button>
+        </div>
+        <p class="t-small t-muted mt-4 mb-0">Active tab inherits sienna in light mode and primary text in dark mode — DESIGN_SYSTEM.md §Tabs.</p>
+      </div>
+
+      <div class="demo">
+        <div class="label-strip"><span class="t-label">Breadcrumbs</span></div>
+        <nav class="breadcrumbs">
+          <a href="#">ObligaI</a><span class="breadcrumbs__sep">/</span>
+          <a href="#">Register</a><span class="breadcrumbs__sep">/</span>
+          <a href="#">EU</a><span class="breadcrumbs__sep">/</span>
+          <span class="breadcrumbs__current">OBLIG-LCR-0412</span>
+        </nav>
+      </div>
+
+      <div class="demo demo--inset">
+        <div class="grid-2">
+          <div>
+            <div class="label-strip">
+              <span class="t-label">Dropdown menu · interactive</span>
+              <span class="t-small t-muted">Click the trigger</span>
+            </div>
+
+            <div class="flex-between" style="background: var(--surface); border: 1px solid var(--border); padding: var(--space-3) var(--space-4); border-radius: var(--radius);">
+              <div>
+                <div class="t-h4 m-0">OBLIG-LCR-0412</div>
+                <p class="t-small t-muted m-0 mt-1">30-day stress liquidity buffer</p>
+              </div>
+              <div class="menu-wrap" data-menu>
+                <button type="button" class="btn btn-secondary btn--size-sm" data-menu-trigger aria-haspopup="menu" aria-expanded="false">
+                  Actions
+                  <span aria-hidden="true" style="font-size: 9px; margin-left: 2px;">▾</span>
+                </button>
+                <div class="menu menu--anchored" role="menu">
+                  <div class="menu__group">Obligation</div>
+                  <div class="menu__item is-selected" role="menuitem">
+                    <span>View detail</span>
+                    <span class="menu__item__shortcut">⏎</span>
+                  </div>
+                  <div class="menu__item" role="menuitem">
+                    <span>Edit summary</span>
+                    <span class="menu__item__shortcut">⌘E</span>
+                  </div>
+                  <div class="menu__item" role="menuitem">
+                    <span>Assign owner</span>
+                    <span class="menu__item__shortcut">⌘O</span>
+                  </div>
+                  <hr class="menu__divider"/>
+                  <div class="menu__group">Export</div>
+                  <div class="menu__item" role="menuitem">
+                    <span>Download PDF</span>
+                    <span class="menu__item__shortcut">⌘P</span>
+                  </div>
+                  <div class="menu__item" role="menuitem">
+                    <span>Download CSV</span>
+                  </div>
+                  <div class="menu__item" role="menuitem">
+                    <span>Copy obligation ID</span>
+                  </div>
+                  <hr class="menu__divider"/>
+                  <div class="menu__item menu__item--danger" role="menuitem">
+                    <span>Mark conflicted</span>
+                    <span class="menu__item__shortcut">⇧⌫</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p class="t-caption mt-3 mb-0 t-muted">2px sienna accent rail slides in on hover · 250ms panel transition on open.</p>
+          </div>
+
+          <div>
+            <div class="label-strip"><span class="t-label">Modal · static demo</span></div>
+            <div class="modal" style="max-width: 100%;">
+              <h3 class="modal__title">Promote to Active?</h3>
+              <p class="modal__body">OBLIG-IRL-1140 has 34% completeness. Promoting to Active will publish the obligation to all linked controls and notify owners across Peru and Panama.</p>
+              <div class="modal__actions">
+                <button type="button" class="btn btn-ghost btn--size-sm">Cancel</button>
+                <button type="button" class="btn btn-primary btn--size-sm">Promote</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HOVER PLAYGROUND -->
+      <div class="demo" style="margin-top: var(--space-6);">
+        <div class="label-strip">
+          <span class="t-label">Hover playground · transitions across the system</span>
+          <span class="t-small t-muted">Move your cursor over each element</span>
+        </div>
+
+        <div class="grid-3" style="gap: var(--space-6); align-items: stretch;">
+          <!-- Vertical nav -->
+          <div>
+            <div class="t-caption mb-3 t-muted">Nav items · 2px sienna rail on hover</div>
+            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space-2) 0;">
+              <a href="#buttons" class="nav-item is-active">Register</a>
+              <a href="#tables" class="nav-item">Sources</a>
+              <a href="#graphs" class="nav-item">Conflicts</a>
+              <a href="#completeness" class="nav-item">Coverage</a>
+              <a href="#alerts" class="nav-item">Audit trail</a>
+            </div>
+          </div>
+
+          <!-- Interactive chips -->
+          <div>
+            <div class="t-caption mb-3 t-muted">Interactive badges &amp; tags · 1px lift</div>
+            <div class="demo-row">
+              <a href="#" class="badge--regulation badge--lcr">LCR</a>
+              <a href="#" class="badge--regulation badge--nsfr">NSFR</a>
+              <a href="#" class="badge--regulation badge--peru">Peru SBS</a>
+              <a href="#" class="badge--regulation badge--panama">Panama SBP</a>
+            </div>
+            <div class="demo-row mt-3">
+              <a href="#" class="tag tag-jurisdiction">European Union</a>
+              <a href="#" class="tag tag-framework">CRR II</a>
+              <a href="#" class="tag tag-domain">Liquidity</a>
+            </div>
+            <div class="demo-row mt-3">
+              <a href="#" class="regulation-label regulation-label--lcr"><em>EU</em> LCR <small>Article 412</small></a>
+            </div>
+            <div class="demo-row mt-3">
+              <nav class="breadcrumbs">
+                <a href="#">Register</a><span class="breadcrumbs__sep">/</span>
+                <a href="#">EU</a><span class="breadcrumbs__sep">/</span>
+                <span class="breadcrumbs__current">LCR-0412</span>
+              </nav>
+            </div>
+          </div>
+
+          <!-- Card with strip -->
+          <div>
+            <div class="t-caption mb-3 t-muted">Regulation strip · widens &amp; glows on hover</div>
+            <div class="card regulation-card regulation-card--peru" style="cursor: pointer;">
+              <p class="regulation-card__id">PE · SBS-N-9075</p>
+              <h4 class="regulation-card__title">Reporte de liquidez</h4>
+              <p class="t-small mt-3 mb-0 t-muted">Hover this card — strip grows from 3px to 5px and casts a coloured glow underneath.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MORE COMPONENTS ============ -->
+    <section class="ref-section" id="more" data-screen-label="19 More">
+      <div class="ref-section__head">
+        <span class="eyebrow">Components · the rest</span>
+        <h2>Icons, loading, empty state, pagination, shells</h2>
+        <p>The remaining surfaces every product screen needs. All key off the same tokens as everything above — add a regulation and these all pick it up.</p>
+      </div>
+
+      <!-- Icons -->
+      <div class="ref-subsection">
+        <h3>Icons · 28-icon sprite · outline 1.5px</h3>
+        <div class="demo">
+          <p class="t-body mt-0 mb-4" style="max-width: 60ch;">Authored on a 24×24 grid, 1.5px stroke, rounded caps. The sprite lives in <code class="code-inline">assets/icons.svg</code> and is also inlined at the top of this page. Reference any icon via <code class="code-inline">&lt;use href="#icon-{name}"/&gt;</code>.</p>
+          <div class="icon-grid">
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-regulation"/></svg></span><small>regulation</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-obligation"/></svg></span><small>obligation</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-conflict"/></svg></span><small>conflict</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-jurisdiction"/></svg></span><small>jurisdiction</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-control"/></svg></span><small>control</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-audit-trail"/></svg></span><small>audit-trail</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-monitor"/></svg></span><small>monitor</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-search"/></svg></span><small>search</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-filter"/></svg></span><small>filter</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-export"/></svg></span><small>export</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-upload"/></svg></span><small>upload</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-user"/></svg></span><small>user</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-settings"/></svg></span><small>settings</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-chevron-up"/></svg></span><small>chevron-up</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-chevron-down"/></svg></span><small>chevron-down</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-chevron-left"/></svg></span><small>chevron-left</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-chevron-right"/></svg></span><small>chevron-right</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-close"/></svg></span><small>close</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-check"/></svg></span><small>check</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-alert"/></svg></span><small>alert</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-info"/></svg></span><small>info</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-calendar"/></svg></span><small>calendar</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-lock"/></svg></span><small>lock</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-link"/></svg></span><small>link</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-copy"/></svg></span><small>copy</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-external-link"/></svg></span><small>external-link</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-sun"/></svg></span><small>sun</small></div>
+            <div class="icon-cell"><span class="icon icon--lg"><svg viewBox="0 0 24 24"><use href="#icon-moon"/></svg></span><small>moon</small></div>
+          </div>
+          <p class="t-caption t-muted mt-4 mb-0">Size: <code class="code-inline">icon--sm/md/lg/xl/2xl</code> · Context: <code class="code-inline">icon--muted/primary/accent/error/success/inverse</code>.</p>
+        </div>
+      </div>
+
+      <!-- Flags -->
+      <div class="ref-subsection">
+        <h3>Flags · 18-jurisdiction sprite</h3>
+        <div class="demo">
+          <p class="t-body mt-0 mb-4" style="max-width: 60ch;">Simplified geometric flags for every jurisdiction in the registry — recognisable at chip / pill size without trying to look photographic. Lives in <code class="code-inline">assets/flags.svg</code>. Reference via <code class="code-inline">&lt;use href="#flag-{cc}"/&gt;</code>.</p>
+          <div class="flag-grid">
+            <div class="flag-cell"><span class="flag flag--xl"><svg viewBox="0 0 24 16"><use href="#flag-eu"/></svg></span><small>European Union</small></div>
+            <div class="flag-cell"><span class="flag flag--xl"><svg viewBox="0 0 24 16"><use href="#flag-uk"/></svg></span><small>United Kingdom</small></div>
+            <div class="flag-cell"><span class="flag flag--xl"><svg viewBox="0 0 24 16"><use href="#flag-us"/></svg></span><small>United States</small></div>
+            <div class="flag-cell"><span class="flag flag--xl"><svg viewBox="0 0 24 16"><use href="#flag-ca"/></svg></span><small>Canada</small></div>
+            <div class="flag-cell"><span class="flag flag--xl"><svg viewBox="0 0 24 16"><use href="#flag-ch"/></svg></span><small>Switzerland</small></div>
+            <div class="flag-cell"><span class="flag flag--xl"><svg viewBox="0 0 24 16"><use href="#flag-pe"/></svg></span><small>Peru</small></div>
+            <div class="flag-cell"><span class="flag flag--xl"><svg viewBox="0 0 24 16"><use href="#flag-pa"/></svg></span><small>Panama</small></div>
+            <div class="flag-cell"><span class="flag flag--xl"><svg viewBox="0 0 24 16"><use href="#flag-mx"/></svg></span><small>Mexico</small></div>
+            <div class="flag-cell"><span class="flag flag--xl"><svg viewBox="0 0 24 16"><use href="#flag-br"/></svg></span><small>Brazil</small></div>
+            <div class="flag-cell"><span class="flag flag--xl"><svg viewBox="0 0 24 16"><use href="#flag-jp"/></svg></span><small>Japan</small></div>
+            <div class="flag-cell"><span class="flag flag--xl"><svg viewBox="0 0 24 16"><use href="#flag-sg"/></svg></span><small>Singapore</small></div>
+            <div class="flag-cell"><span class="flag flag--xl"><svg viewBox="0 0 24 16"><use href="#flag-hk"/></svg></span><small>Hong Kong</small></div>
+            <div class="flag-cell"><span class="flag flag--xl"><svg viewBox="0 0 24 16"><use href="#flag-au"/></svg></span><small>Australia</small></div>
+            <div class="flag-cell"><span class="flag flag--xl"><svg viewBox="0 0 24 16"><use href="#flag-id"/></svg></span><small>Indonesia</small></div>
+            <div class="flag-cell"><span class="flag flag--xl"><svg viewBox="0 0 24 16"><use href="#flag-my"/></svg></span><small>Malaysia</small></div>
+            <div class="flag-cell"><span class="flag flag--xl"><svg viewBox="0 0 24 16"><use href="#flag-vn"/></svg></span><small>Vietnam</small></div>
+            <div class="flag-cell"><span class="flag flag--xl"><svg viewBox="0 0 24 16"><use href="#flag-th"/></svg></span><small>Thailand</small></div>
+            <div class="flag-cell"><span class="flag flag--xl"><svg viewBox="0 0 24 16"><use href="#flag-internal"/></svg></span><small>Internal</small></div>
+          </div>
+          <p class="t-caption t-muted mt-4 mb-0">Size: <code class="code-inline">flag--sm/md/lg/xl</code> (15 · 18 · 24 · 36 px wide).</p>
+        </div>
+      </div>
+
+      <!-- Stub kept so the next selector still matches -->
+      <div style="display:none" class="ref-subsection">
+        <h3>Icons · outline 1.5px</h3>
+        <div class="demo">
+          <div class="flex-row gap-6" style="align-items: center; flex-wrap: wrap;">
+            <span class="icon icon--sm" title="sm 16px"><svg viewBox="0 0 16 16"><circle cx="7" cy="7" r="5"/><line x1="11" y1="11" x2="14" y2="14"/></svg></span>
+            <span class="icon icon--md" title="md 20px"><svg viewBox="0 0 20 20"><path d="M3 10l5 5 9-11"/></svg></span>
+            <span class="icon icon--lg icon--accent" title="lg 24px accent"><svg viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/></svg></span>
+            <span class="icon icon--xl icon--error" title="xl 32px error"><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12"/><line x1="16" y1="10" x2="16" y2="17"/><circle cx="16" cy="21" r="1" fill="currentColor"/></svg></span>
+            <span class="icon icon--2xl icon--muted" title="2xl 48px muted"><svg viewBox="0 0 48 48"><rect x="8" y="12" width="32" height="26" rx="1"/><line x1="8" y1="20" x2="40" y2="20"/><line x1="15" y1="28" x2="33" y2="28"/><line x1="15" y1="33" x2="27" y2="33"/></svg></span>
+          </div>
+          <p class="t-caption t-muted mt-4 mb-0">Size: <code class="code-inline">icon--sm/md/lg/xl/2xl</code> · Context: <code class="code-inline">icon--muted/primary/accent/error/success/inverse</code>.</p>
+        </div>
+      </div>
+
+      <!-- Spinner & Skeleton -->
+      <div class="ref-subsection">
+        <h3>Spinner &amp; skeleton</h3>
+        <div class="grid-2">
+          <div class="demo">
+            <div class="label-strip"><span class="t-label">Spinner · sm · md · lg</span></div>
+            <div class="flex-row gap-6" style="align-items: center;">
+              <span class="spinner spinner--sm"></span>
+              <span class="spinner"></span>
+              <span class="spinner spinner--lg"></span>
+              <span class="t-small t-muted"><span class="spinner spinner--sm spinner--inline"></span>Validating obligation…</span>
+            </div>
+          </div>
+          <div class="demo">
+            <div class="label-strip"><span class="t-label">Skeleton · shimmer</span></div>
+            <div class="flex-row gap-3" style="align-items: center;">
+              <span class="skeleton skeleton--avatar"></span>
+              <div class="flex-col gap-2" style="flex: 1;">
+                <span class="skeleton skeleton--title"></span>
+                <span class="skeleton skeleton--text"></span>
+                <span class="skeleton skeleton--text" style="max-width: 24ch;"></span>
+              </div>
+            </div>
+            <span class="skeleton skeleton--block mt-3"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty state -->
+      <div class="ref-subsection">
+        <h3>Empty state</h3>
+        <div class="demo">
+          <div class="empty-state">
+            <span class="empty-state__icon">
+              <svg viewBox="0 0 48 48"><rect x="8" y="10" width="32" height="30" rx="1"/><line x1="8" y1="18" x2="40" y2="18"/><line x1="15" y1="26" x2="33" y2="26"/><line x1="15" y1="31" x2="27" y2="31"/></svg>
+            </span>
+            <h4 class="empty-state__title">No obligations in this scope</h4>
+            <p class="empty-state__body">There are no obligations matching the active jurisdiction filter. Loosen the scope or import a regulatory source to begin.</p>
+            <div class="empty-state__action">
+              <button type="button" class="btn btn-primary btn--size-sm">Import source</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="ref-subsection">
+        <h3>Pagination</h3>
+        <div class="demo">
+          <div class="flex-between">
+            <span class="pagination__summary">Showing <b>1–12</b> of 248 obligations</span>
+            <nav class="pagination" aria-label="Pagination">
+              <button type="button" class="pagination__btn" disabled aria-label="Previous">‹</button>
+              <button type="button" class="pagination__btn is-active">1</button>
+              <button type="button" class="pagination__btn">2</button>
+              <button type="button" class="pagination__btn">3</button>
+              <button type="button" class="pagination__btn">4</button>
+              <span class="pagination__ellipsis">…</span>
+              <button type="button" class="pagination__btn">21</button>
+              <button type="button" class="pagination__btn" aria-label="Next">›</button>
+            </nav>
+          </div>
+        </div>
+      </div>
+
+      <!-- App shell (sidebar + topbar) -->
+      <div class="ref-subsection">
+        <h3>App shell · sidebar + top bar</h3>
+        <div class="demo p-0" style="overflow: hidden;">
+          <div class="app-shell" style="min-height: 360px; height: 360px; --sidebar-w: 200px; --topbar-h: 48px;">
+            <aside class="sidebar">
+              <div class="sidebar__brand">
+                <span class="logo logo--sm">
+                  <svg viewBox="0 0 160 124" xmlns="http://www.w3.org/2000/svg" aria-label="ObligaI">
+                    <line x1="80" y1="46" x2="80" y2="34" stroke="#B85C3A" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="88" y1="61" x2="109" y2="75" stroke="#B85C3A" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="72" y1="62" x2="55" y2="74" stroke="#B85C3A" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="80" cy="56" r="10" fill="#B85C3A"/>
+                    <circle cx="80" cy="28" r="6" fill="none" stroke="#B85C3A" stroke-width="3"/>
+                    <circle cx="114" cy="78" r="6" fill="none" stroke="#B85C3A" stroke-width="3"/>
+                    <circle cx="50" cy="78" r="6" fill="none" stroke="#B85C3A" stroke-width="3"/>
+                    <text x="80" y="108" text-anchor="middle" font-family="Inter, -apple-system, Helvetica, Arial, sans-serif" font-weight="500" font-size="24" fill="currentColor" letter-spacing="-0.3">Obliga<tspan font-family="Georgia, &#39;Times New Roman&#39;, serif" font-style="italic" fill="#B85C3A" dx="-0.04em">I</tspan></text>
+                  </svg>
+                </span>
+              </div>
+              <div class="sidebar__nav">
+                <span class="sidebar__group">Workspace</span>
+                <a href="#" class="nav-item is-active">Register</a>
+                <a href="#" class="nav-item">Conflicts</a>
+                <a href="#" class="nav-item">Sources</a>
+                <a href="#" class="nav-item">Audit trail</a>
+                <span class="sidebar__group">Account</span>
+                <a href="#" class="nav-item">Settings</a>
+                <a href="#" class="nav-item">Connections</a>
+              </div>
+              <div class="sidebar__footer">v1.0.0 · prototype</div>
+            </aside>
+            <header class="topbar">
+              <div class="topbar__left">
+                <nav class="breadcrumbs">
+                  <a href="#">Register</a><span class="breadcrumbs__sep">/</span>
+                  <span class="breadcrumbs__current">All obligations</span>
+                </nav>
+              </div>
+              <div class="topbar__search">
+                <div class="input-group">
+                  <span class="input-group__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><line x1="11" y1="11" x2="14" y2="14" stroke-linecap="round"/></svg></span>
+                  <input class="input" type="search" placeholder="Search obligations, articles, sources…"/>
+                </div>
+              </div>
+              <div class="topbar__right">
+                <button type="button" class="btn btn-ghost btn-icon" aria-label="Notifications">○</button>
+                <span class="skeleton skeleton--avatar" style="width: 32px; height: 32px;"></span>
+              </div>
+            </header>
+            <main class="app-shell__content">
+              <h3 class="t-h3 m-0 mb-2">All obligations</h3>
+              <p class="t-small t-muted m-0 mb-4">248 obligations across 14 jurisdictions · last refresh 14 minutes ago.</p>
+              <div class="grid-3">
+                <div class="card card--compact"><div class="t-label mb-2">Active</div><div class="t-h2">187</div></div>
+                <div class="card card--compact"><div class="t-label mb-2">Conflicted</div><div class="t-h2">12</div></div>
+                <div class="card card--compact"><div class="t-label mb-2">Implementing</div><div class="t-h2">49</div></div>
+              </div>
+            </main>
+          </div>
+        </div>
+        <p class="t-caption t-muted mt-3 mb-0">Class composition: <code class="code-inline">.app-shell &gt; .sidebar + .topbar + .app-shell__content</code>.</p>
+      </div>
+    </section>
+
+    <!-- ============ GRID & RESPONSIVE ============ -->
+    <section class="ref-section" id="grid" data-screen-label="18 Grid">
+      <div class="ref-section__head">
+        <span class="eyebrow">Layout</span>
+        <h2>Grid &amp; responsive system</h2>
+        <p>Mobile first. <code class="code-inline">.grid-N</code> stacks at base, widens at 640px and again at 1200px. Spacing helpers, gap helpers and flex helpers cover the rest.</p>
+      </div>
+
+      <div class="demo">
+        <div class="label-strip"><span class="t-label">.grid-4 at this width</span><span class="t-mono t-muted">resize window to test</span></div>
+        <div class="grid-4">
+          <div class="card card--compact"><div class="t-h4 m-0">Cell 1</div><p class="t-small m-0 mt-2 t-muted">Mobile · stacked</p></div>
+          <div class="card card--compact"><div class="t-h4 m-0">Cell 2</div><p class="t-small m-0 mt-2 t-muted">640px · 2 cols</p></div>
+          <div class="card card--compact"><div class="t-h4 m-0">Cell 3</div><p class="t-small m-0 mt-2 t-muted">1200px · 4 cols</p></div>
+          <div class="card card--compact"><div class="t-h4 m-0">Cell 4</div><p class="t-small m-0 mt-2 t-muted">1600px · loosens</p></div>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="label-strip"><span class="t-label">Breakpoint tokens</span></div>
+        <div class="grid-3">
+          <div><span class="t-mono">--bp-mobile</span><div class="t-h3 mt-1">640px</div></div>
+          <div><span class="t-mono">--bp-desktop</span><div class="t-h3 mt-1">1200px</div></div>
+          <div><span class="t-mono">--bp-wide</span><div class="t-h3 mt-1">1600px</div></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="ref-footer">
+  <b>ObligaI · Extended Centralised Stylesheet</b> · v1.0 · Authored against <i>DESIGN_SYSTEM.md</i> ·
+  Extends <code class="code-inline" style="padding: 2px 4px;">colors_and_type.css</code> · Scales to 50+ jurisdictions by token append only ·
+  British English · WCAG AA targets · No gradients, no shadows at rest on resting components, no rounded buttons.
+</footer>
+
+<script>
+  // Theme toggle ------------------------------------------------
+  (function () {
+    const root = document.documentElement;
+    const btns = document.querySelectorAll('[data-theme-set]');
+    const apply = (theme) => {
+      root.setAttribute('data-theme', theme);
+      btns.forEach((b) => b.classList.toggle('is-active', b.dataset.themeSet === theme));
+      try { localStorage.setItem('obligai-theme', theme); } catch (e) {}
+    };
+    btns.forEach((b) => b.addEventListener('click', () => apply(b.dataset.themeSet)));
+    // Restore
+    try {
+      const saved = localStorage.getItem('obligai-theme');
+      if (saved === 'dark' || saved === 'light') apply(saved);
+    } catch (e) {}
+  })();
+
+  // Dropdown menu (Actions trigger) ----------------------------
+  document.querySelectorAll('[data-menu]').forEach((wrap) => {
+    const trigger = wrap.querySelector('[data-menu-trigger]');
+    if (!trigger) return;
+    const close = () => { wrap.classList.remove('is-open'); trigger.setAttribute('aria-expanded', 'false'); };
+    const open  = () => { wrap.classList.add('is-open');    trigger.setAttribute('aria-expanded', 'true');  };
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      wrap.classList.contains('is-open') ? close() : open();
+    });
+    document.addEventListener('click', (e) => { if (!wrap.contains(e.target)) close(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  });
+
+  // Combined scope control (jurisdictions → pills → searchable + Add)
+  (function () {
+    const root = document.getElementById('scope-control');
+    if (!root) return;
+
+    // Data — order matters: EU first, then countries alphabetically by region,
+    // Internal last. Each regulation has short label, full name and meta line.
+    const DATA = [
+      { id: 'eu', name: 'European Union', regs: [
+        { id: 'lcr',  short: 'LCR',  name: 'LCR',  meta: 'Liquidity Coverage Ratio · Article 412 CRR II' },
+        { id: 'nsfr', short: 'NSFR', name: 'NSFR', meta: 'Net Stable Funding Ratio · Article 428a CRR II' },
+        { id: 'almm', short: 'ALMM', name: 'ALMM', meta: 'Additional Liquidity Monitoring Metrics' },
+      ]},
+      { id: 'uk', name: 'United Kingdom', regs: [
+        { id: 'uk-fra', short: 'UK FRA', name: 'PRA Fundamental Rules', meta: 'Prudential Regulation Authority · FCA handbook' },
+      ]},
+      { id: 'us', name: 'United States', regs: [
+        { id: 'us-fed', short: 'US Fed', name: 'US Federal Reserve', meta: 'Reg YY · LCR US implementation' },
+      ]},
+      { id: 'ca', name: 'Canada', regs: [
+        { id: 'canada-osfi', short: 'OSFI', name: 'Canada OSFI', meta: 'Liquidity Adequacy Requirements (LAR)' },
+      ]},
+      { id: 'ch', name: 'Switzerland', regs: [
+        { id: 'switzerland-finma', short: 'FINMA', name: 'Switzerland FINMA', meta: 'LCR · Circular 2015/2' },
+      ]},
+      { id: 'pe', name: 'Peru', regs: [
+        { id: 'peru', short: 'Peru SBS', name: 'Peru SBS', meta: 'Resolución SBS N° 9075 · Reporte de liquidez' },
+      ]},
+      { id: 'pa', name: 'Panama', regs: [
+        { id: 'panama', short: 'Panama SBP', name: 'Panama SBP', meta: 'Coeficiente de cobertura mensual' },
+      ]},
+      { id: 'mx', name: 'Mexico', regs: [
+        { id: 'mexico-cnbv', short: 'CNBV', name: 'Mexico CNBV', meta: 'Coeficiente de Cobertura de Liquidez (CCL)' },
+      ]},
+      { id: 'br', name: 'Brazil', regs: [
+        { id: 'brazil-bcb', short: 'BCB', name: 'Brazil BCB', meta: 'Resolução 4.090 · Razão de Liquidez' },
+      ]},
+      { id: 'jp', name: 'Japan', regs: [
+        { id: 'japan-bsr', short: 'BSR', name: 'Japan BSR', meta: 'BOJ · Basel Standard Ratio' },
+      ]},
+      { id: 'sg', name: 'Singapore', regs: [
+        { id: 'singapore-mas', short: 'MAS 649', name: 'Singapore MAS', meta: 'Notice 649 · Minimum liquid assets' },
+      ]},
+      { id: 'hk', name: 'Hong Kong', regs: [
+        { id: 'hongkong-hkma', short: 'HKMA', name: 'Hong Kong HKMA', meta: 'LM-2 · Liquidity Maintenance Ratio' },
+      ]},
+      { id: 'au', name: 'Australia', regs: [
+        { id: 'australia-apra', short: 'APRA', name: 'Australia APRA', meta: 'APS 210 · Liquidity prudential standard' },
+      ]},
+      { id: 'id', name: 'Indonesia', regs: [
+        { id: 'indonesia-ojk', short: 'OJK', name: 'Indonesia OJK', meta: 'POJK 42/2015 · LCR for banks' },
+      ]},
+      { id: 'my', name: 'Malaysia', regs: [
+        { id: 'malaysia-bnm', short: 'BNM', name: 'Malaysia BNM', meta: 'BNM Liquidity Coverage Ratio Framework' },
+      ]},
+      { id: 'vn', name: 'Vietnam', regs: [
+        { id: 'vietnam-sbv', short: 'SBV', name: 'Vietnam SBV', meta: 'Circular 22/2019 · prudential ratios' },
+      ]},
+      { id: 'th', name: 'Thailand', regs: [
+        { id: 'thailand-bot', short: 'BOT', name: 'Thailand BOT', meta: 'BOT Liquidity Coverage Ratio Notification' },
+      ]},
+      { id: 'internal', name: 'Internal', regs: [
+        { id: 'irl', short: 'IRL', name: 'IRL', meta: 'Internal Liquidity Reporting' },
+      ]},
+    ];
+
+    // Flat lookup
+    const ALL = [];
+    DATA.forEach(j => j.regs.forEach(r => ALL.push(Object.assign({}, r, { jurisdiction: j.id, jurisdictionName: j.name }))));
+    const byId = new Map(ALL.map(r => [r.id, r]));
+
+    // State
+    let activeJurisdiction = 'all';                  // 'all' or DATA[*].id
+    const selected = new Set(['lcr', 'nsfr', 'irl']); // seed
+
+    // Active jurisdiction → its CSS colour token. Each country uses the
+    // --color-juris-* alias defined in the stylesheet; we don't re-encode
+    // colours in JS so the registry stays the single source of truth.
+    const jurisColor = (id) => `var(--color-juris-${id})`;
+    const jurisLight = (id) => {
+      // map juris id → matching regulation -light token
+      const lightFor = {
+        eu: 'lcr', uk: 'uk-fra', us: 'us-fed', ca: 'canada-osfi',
+        ch: 'switzerland-finma', pe: 'peru', pa: 'panama',
+        mx: 'mexico-cnbv', br: 'brazil-bcb', jp: 'japan-bsr',
+        sg: 'singapore-mas', hk: 'hongkong-hkma', au: 'australia-apra',
+        id: 'indonesia-ojk', my: 'malaysia-bnm',
+        vn: 'vietnam-sbv', th: 'thailand-bot',
+        internal: 'irl',
+      };
+      return `var(--color-${lightFor[id]}-light)`;
+    };
+
+    // DOM refs
+    const elJur     = root.querySelector('[data-scope-jurisdictions]');
+    const elPills   = root.querySelector('[data-scope-pills]');
+    const elAddWrap = root.querySelector('[data-scope-add]');
+    const elAddBtn  = root.querySelector('[data-scope-add-trigger]');
+    const elSearch  = root.querySelector('[data-scope-search]');
+    const elList    = root.querySelector('[data-scope-list]');
+    const elCount   = root.querySelector('[data-scope-count]');
+    const elClose   = root.querySelector('[data-scope-close]');
+    const elClear   = root.querySelector('[data-scope-clear]');
+
+    // ----- Render jurisdiction chip row -----
+    function renderJurisdictions() {
+      const parts = [
+        '<span class="scope-bar__label">Jurisdiction</span>',
+        chip('all', 'All jurisdictions', ALL.length),
+      ];
+      DATA.forEach(j => parts.push(chip(j.id, j.name, j.regs.length)));
+      elJur.innerHTML = parts.join('');
+      elJur.querySelectorAll('[data-j]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          activeJurisdiction = btn.dataset.j;
+          render();
+        });
+      });
+    }
+    function chip(id, name, count) {
+      const active = id === activeJurisdiction ? ' is-active' : '';
+      return `<button type="button" class="scope-chip${active}" data-j="${id}">${name} <span class="scope-chip__count">${count}</span></button>`;
+    }
+
+    // ----- Render pills row -----
+    function renderPills() {
+      const ids = [...selected].filter(id => {
+        if (activeJurisdiction === 'all') return true;
+        return byId.get(id)?.jurisdiction === activeJurisdiction;
+      });
+      elPills.innerHTML = ids.map(id => {
+        const r = byId.get(id);
+        return `<span class="scope-pill scope-pill--${id}">${r.short} <button class="scope-pill__close" data-remove="${id}" aria-label="Remove ${r.short}">×</button></span>`;
+      }).join('');
+      elPills.querySelectorAll('[data-remove]').forEach(b => {
+        b.addEventListener('click', () => { selected.delete(b.dataset.remove); render(); });
+      });
+    }
+
+    // ----- Render combobox list -----
+    function renderList() {
+      const q = (elSearch.value || '').trim().toLowerCase();
+      // pool of options: filtered by jurisdiction
+      const pool = activeJurisdiction === 'all' ? ALL : ALL.filter(r => r.jurisdiction === activeJurisdiction);
+      const filtered = pool.filter(r => !q
+        || r.name.toLowerCase().includes(q)
+        || r.short.toLowerCase().includes(q)
+        || r.meta.toLowerCase().includes(q)
+        || r.jurisdictionName.toLowerCase().includes(q));
+
+      if (activeJurisdiction === 'all') {
+        // group by jurisdiction
+        const groups = new Map();
+        filtered.forEach(r => {
+          if (!groups.has(r.jurisdiction)) groups.set(r.jurisdiction, []);
+          groups.get(r.jurisdiction).push(r);
+        });
+        const parts = [];
+        DATA.forEach(j => {
+          const items = groups.get(j.id);
+          if (!items || !items.length) return;
+          parts.push(`<div class="combobox__group"><span>${j.name}</span><span>${items.length}</span></div>`);
+          items.forEach(r => parts.push(renderOption(r)));
+        });
+        elList.innerHTML = parts.join('') || emptyState(q);
+      } else {
+        elList.innerHTML = filtered.map(renderOption).join('') || emptyState(q);
+      }
+      elList.querySelectorAll('[data-pick]').forEach(o => {
+        o.addEventListener('click', () => {
+          const id = o.dataset.pick;
+          if (selected.has(id)) selected.delete(id); else selected.add(id);
+          render();
+        });
+      });
+      elCount.textContent = selected.size + ' selected · ' + filtered.length + ' shown';
+    }
+    function renderOption(r) {
+      const sel = selected.has(r.id) ? ' is-selected' : '';
+      return `<div class="combobox__option${sel}" data-pick="${r.id}">
+        <span class="combobox__option__dot" style="background: var(--color-${r.id});"></span>
+        <div class="combobox__option__body">
+          <div class="combobox__option__name">${r.name}</div>
+          <div class="combobox__option__meta">${r.meta}</div>
+        </div>
+        <div class="combobox__option__check"></div>
+      </div>`;
+    }
+    function emptyState(q) {
+      return `<div class="p-6 t-caption t-muted" style="text-align: center;">No regulations match “${q}” in the active jurisdiction.</div>`;
+    }
+
+    function render() {
+      // Reflect jurisdiction colour on the host so chips / pills /
+      // popover inherit it via CSS custom properties.
+      const bar = root.querySelector('.scope-bar');
+      if (activeJurisdiction === 'all') {
+        bar.style.removeProperty('--juris-color');
+        bar.style.removeProperty('--juris-light');
+      } else {
+        bar.style.setProperty('--juris-color', jurisColor(activeJurisdiction));
+        bar.style.setProperty('--juris-light', jurisLight(activeJurisdiction));
+      }
+      renderJurisdictions();
+      renderPills();
+      renderList();
+    }
+
+    // Events
+    elAddBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      elAddWrap.classList.toggle('is-open');
+      if (elAddWrap.classList.contains('is-open')) setTimeout(() => elSearch.focus(), 50);
+    });
+    document.addEventListener('click', (e) => { if (!elAddWrap.contains(e.target)) elAddWrap.classList.remove('is-open'); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') elAddWrap.classList.remove('is-open'); });
+    elClose.addEventListener('click', () => elAddWrap.classList.remove('is-open'));
+    elSearch.addEventListener('input', renderList);
+    elClear.addEventListener('click', () => { selected.clear(); render(); });
+
+    render();
+  })();
+</script>
+
+</body>
+</html>
