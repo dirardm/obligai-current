@@ -17,16 +17,28 @@ All colors, spacing, typography, components, and themes flow from these styleshe
 
 ## Files in This Folder
 
+### Documentation
 | File | Purpose |
 |------|---------|
 | **README.md** | This file — design system overview and quick start |
-| **colors_and_type.css** | Canonical tokens (light/dark, typography, spacing) |
-| **ObligaI_Extended_Stylesheet.css** | Extended components, regulation registry, responsive grid |
 | **DESIGN_SYSTEM.md** | Complete design system specification from the designer |
 | **STRUCTURE.md** | Stylesheet organization and section guide |
 | **INTRODUCTION.md** | Long-term architectural vision for the regulatory knowledge graph |
 | **PROMPT.md** | Original design briefs and prompts |
 | **Stylesheet Reference.html** | Interactive live reference (open in browser) |
+
+### Stylesheets (Canonical)
+| File | Purpose |
+|------|---------|
+| **colors_and_type.css** | Canonical tokens (light/dark, typography, spacing) |
+| **ObligaI_Extended_Stylesheet.css** | Extended components, regulation registry, responsive grid |
+
+### Assets & References
+| Folder | Purpose |
+|--------|---------|
+| **assets/** | SVG logos, icons (28), flags (18) |
+| **screenshots/** | Design system reference screenshots |
+| **ObligaI Centralised Stylesheets.zip** | Archived design system package |
 
 ---
 
