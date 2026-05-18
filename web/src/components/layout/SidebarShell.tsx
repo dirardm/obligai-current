@@ -55,7 +55,7 @@ export default function SidebarShell({ children }: { children: React.ReactNode }
           </span>
         ) : (
           <span className="logo" style={{ width: "32px" }} aria-label="ObligaI mark">
-            <svg viewBox="48 16 64 64" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="40 14 80 80" xmlns="http://www.w3.org/2000/svg">
               {MARK_PATHS}
             </svg>
           </span>
