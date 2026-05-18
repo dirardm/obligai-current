@@ -13,6 +13,6 @@
   <circle cx="50" cy="78" r="6" fill="none" stroke="#B85C3A" stroke-width="3"></circle>
 
   
-  <text x="80" y="108" text-anchor="middle" font-family="Inter, -apple-system, Helvetica Neue, Arial, sans-serif" font-weight="500" font-size="24" fill="#0F0F0F" letter-spacing="-0.3">Obliga<tspan font-family="Georgia, &#39;Times New Roman&#39;, serif" font-style="italic" fill="#B85C3A" dx="-0.04em">I</tspan></text>
+  <text x="80" y="108" text-anchor="middle" font-family="Inter, -apple-system, Helvetica Neue, Arial, sans-serif" font-weight="500" font-size="24" fill="currentColor" letter-spacing="-0.3">Obliga<tspan font-family="Georgia, &#39;Times New Roman&#39;, serif" font-style="italic" fill="#B85C3A" dx="-0.04em">I</tspan></text>
 
 </svg>
