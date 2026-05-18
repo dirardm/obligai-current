@@ -35,7 +35,7 @@ ObligaI is a regulatory intelligence platform designed to help financial institu
 - **Scope control** — Real-time jurisdiction + regulation filter
 
 **Data sources (mocked):**
-- `src/data/obligations.ts` — 432 obligations with status/completeness/deadline
+- `src/data/obligations.ts` — 131 obligations with status/completeness/deadline
 - Bar chart dimensions calculated in component
 
 **Example workflow:**
@@ -360,7 +360,7 @@ Badges, charts, text, and borders automatically inherit the regulation's colour 
 
 All data is hardcoded in `src/data/`. In a production system, this would come from a backend API.
 
-### Obligations (432 entries)
+### Obligations (131 entries)
 
 ```typescript
 interface Obligation {
@@ -380,7 +380,7 @@ interface Obligation {
 }
 ```
 
-**Mocked:** 24 obligations per jurisdiction × 18 jurisdictions = 432 total
+**Mocked:** 131 total obligations distributed across 20 regulations and 18 jurisdictions
 
 ### Regulations (20 entries)
 
@@ -519,7 +519,7 @@ export default async function ObligationDetail({ params }) {
 - **Skeleton loaders:** Prevent layout shift
 
 ### Mock Data
-- **Obligations:** Loaded once on app start (432 entries, <50KB JSON)
+- **Obligations:** Loaded once on app start (131 entries, <20KB JSON)
 - **Store updates:** Instant (in-memory)
 - **Route changes:** Instant (no network)
 

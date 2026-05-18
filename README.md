@@ -15,7 +15,7 @@ A modern, interactive platform for exploring, tracking, and managing regulatory 
 
 The application provides:
 
-- **Obligation Registry** — a searchable, sortable database of 432+ regulatory obligations across 20+ regulations and 18+ jurisdictions
+- **Obligation Registry** — a searchable, sortable database of 131 regulatory obligations across 20 regulations and 18 jurisdictions
 - **Regulatory Sources** — automated scraper monitoring for regulatory document changes across 8+ regulatory bodies
 - **Conflict Detection** — visual graph-based identification of conflicting regulatory requirements
 - **Compliance Dashboard** — at-a-glance overview of obligation status, completeness, and deadlines
@@ -106,7 +106,7 @@ obligai-current/
 │   │   │   └── product/            # Feature components (Dashboard, Register, etc.)
 │   │   ├── data/
 │   │   │   ├── registry.ts         # 20 regulations, 18 jurisdictions
-│   │   │   └── obligations.ts      # 432 mock obligations
+│   │   │   └── obligations.ts      # 131 mock obligations
 │   │   ├── store/
 │   │   │   ├── theme.ts            # Zustand theme store
 │   │   │   └── scope.ts            # Zustand scope store

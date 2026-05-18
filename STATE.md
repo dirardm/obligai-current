@@ -134,7 +134,7 @@ interface Obligation {
 }
 ```
 
-**Total:** 432 mock obligations (24 per jurisdiction × 18 jurisdictions)
+**Total:** 131 mock obligations
 
 ### Regulation Structure
 ```typescript
@@ -264,7 +264,7 @@ const { theme, toggleTheme } = useThemeStore();
 - ✅ 7 main screens (Dashboard, Register, Sources, Conflicts, Reports, Settings, Gallery)
 - ✅ 20 regulations with colour tokens
 - ✅ 18 jurisdictions with flags
-- ✅ 432 mock obligations
+- ✅ 131 mock obligations
 - ✅ Scope store (jurisdiction + regulation filtering)
 - ✅ Theme store (light/dark toggle)
 - ✅ Sidebar with autohide mark visibility fix
