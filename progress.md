@@ -183,3 +183,77 @@ Layout classes for all four screens appended under clearly commented subsection 
 - [x] Scope state persists across all route changes
 - [x] Dark mode confirmed token-driven; sienna invariant
 - [x] TypeScript: zero errors across all screens (`tsc --noEmit`)
+
+---
+
+## Checkpoint 8 — Sidebar Mark Fix + Regulatory Sources ✓
+
+**Date:** 2026-05-18
+
+### What was done
+
+- **Sidebar Mark ViewBox Fix:** Changed collapsed-state SVG viewBox from `"48 16 64 64"` to `"40 14 80 80"` to display all four nodes (top, centre filled, left/right bottom) fully visible without clipping
+- **Regulatory Sources Enhanced:** Added four Latin American jurisdictions with complete scraper configurations:
+  - Colombia (IRL — Indicador de Riesgo de Liquidez)
+  - Brazil (BCB — Banco Central do Brasil)
+  - Peru (SBS — Superintendencia de Banca y Seguros)
+  - Panama (SBP — Superintendencia de Bancos de Panamá)
+- **UK Flag Fixed:** Changed jurisdiction code from `"gb"` to `"uk"` to match registry
+- **UK Scraper Health:** Updated from "degraded" to "healthy" status
+- **Jurisdictions Reorganized:** Sorted alphabetically by region for consistency
+
+### §28 changes
+
+No CSS changes — only component tree and data updates.
+
+### Validation checklist
+
+- [x] All four bottom nodes of sidebar mark now fully visible
+- [x] UK flag displays correctly in Regulatory Sources table
+- [x] Colombia, Brazil, Peru, Panama appear in registry and sources page
+- [x] Git commits created without extra artifacts
+
+---
+
+## Checkpoint 9 — Compact Table Density ✓
+
+**Date:** 2026-05-18
+
+### What was done
+
+- **Sources Table:** Applied `table--compact` modifier to Regulatory Sources table (rows ~40px tall)
+- **Reports Table:** Applied `table--compact` modifier to Generated Reports table (rows ~40px tall)
+
+### Validation checklist
+
+- [x] Both tables render with compact density modifier
+- [x] `table--compact` CSS class exists in stylesheet §10
+- [x] No component code changed — only className update
+- [x] Rows visibly more compact without loss of readability
+
+---
+
+## Checkpoint 10 — Documentation Update ✓
+
+**Date:** 2026-05-18
+
+### What was done
+
+- **README.md:** Comprehensive app documentation including features, tech stack, project structure, development workflow
+- **CLAUDE.md:** AI development guidelines covering core principles, patterns, anti-patterns, commit workflow
+- **STATE.md:** Current application state snapshot (created)
+- **DESCRIPTION.md:** Full feature + architecture description (created)
+
+### Files Created/Updated
+
+- Updated `README.md` — app-level overview (not just design system)
+- Created `CLAUDE.md` — comprehensive AI development guidelines
+- Created `STATE.md` — current state and feature inventory
+- Created `DESCRIPTION.md` — feature map and architectural decisions
+
+### Validation checklist
+
+- [x] README covers tech stack, features, getting started
+- [x] CLAUDE.md documents all core patterns and anti-patterns
+- [x] STATE.md reflects current screens, components, and regulations
+- [x] DESCRIPTION.md provides complete feature inventory
