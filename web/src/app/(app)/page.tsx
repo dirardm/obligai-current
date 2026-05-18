@@ -1,12 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { OBLIGATIONS } from "@/data/obligations";
 import { REGULATIONS, JURISDICTIONS } from "@/data/registry";
 import { useScopeStore } from "@/store/scope";
 import Card from "@/components/ui/Card";
-import Icon from "@/components/ui/Icon";
 import ScopeControl from "@/components/product/ScopeControl";
 import StatCard from "@/components/product/StatCard";
 import StatusBadge from "@/components/product/StatusBadge";
@@ -97,32 +96,9 @@ export default function DashboardPage() {
     return Math.ceil((new Date(future[0].deadline!).getTime() - Date.now()) / 86_400_000);
   }, [scoped]);
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/register/search?q=${encodeURIComponent(searchQuery.trim())}`);
-    }
-  };
-
   return (
     <div>
       <ScopeControl />
-
-      <form onSubmit={handleSearch} className="register-search mt-4 mb-2">
-        <input
-          type="search"
-          className="input"
-          placeholder="Search obligations by ID, summary, regulation, framework or assignee…"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          aria-label="Search obligations"
-        />
-        <button type="submit" className="btn btn-secondary btn--size-md">
-          <Icon name="search" size="sm" />
-          Search
-        </button>
-      </form>
 
       <div className="dashboard-grid mt-4">
 
