@@ -80,7 +80,7 @@ ObligaI does three things. First, it brings together regulatory obligations from
 
 **Body content:**
 
-ObligaI operates as a four-stage pipeline. Regulatory source scrapers monitor central banks and prudential authorities, fetching new documents on a schedule. The obligation extraction engine parses regulatory text and creates structured obligation records, each with a citation, summary, status, and deadline. A conflict detection system identifies when two obligations contradict or require overlapping controls. Finally, a dashboard and reporting interface let compliance teams view their obligations in real time, identify gaps, and generate reports for stakeholders.
+ObligaI operates as a four-stage pipeline. Regulatory source scrapers monitor twelve central banks and prudential authorities, displaying scraper health and document status. The obligation extraction engine (currently with mock data) creates structured obligation records, each with a citation, summary, status, and deadline. A conflict detection system identifies when two obligations contradict or require overlapping controls. Finally, a dashboard and reporting interface let compliance teams view their obligations in real time, identify gaps, and generate reports for stakeholders.
 
 **Visual:**
 Horizontal flow diagram with four boxes connected by arrows:
@@ -92,7 +92,7 @@ Horizontal flow diagram with four boxes connected by arrows:
 Below each box: brief label of the ObligaI surface that executes that step (Sources page, Register page, Conflicts page, Dashboard page).
 
 **Speaker note:**
-Let me walk through the pipeline. First, regulatory sources. We have scrapers monitoring eight regulatory bodies across eighteen jurisdictions. When a new regulation is published, the scraper fetches it. Next, extraction. We parse that document and pull out structured obligations with citations, summaries, and deadlines. Then conflicts. We compare obligations against each other and flag when two regulations require mutually exclusive things. Finally, dashboard. Your team opens ObligaI and sees all their obligations, knows what's conflicted, knows what's due. All in one place.
+Let me walk through the pipeline. First, regulatory sources. We have scrapers monitoring twelve regulatory bodies across eighteen jurisdictions. When a new regulation is published, the scraper fetches it. Next, extraction. We parse that document and pull out structured obligations with citations, summaries, and deadlines. Then conflicts. We compare obligations against each other and flag when two regulations require mutually exclusive things. Finally, dashboard. Your team opens ObligaI and sees all their obligations, knows what's conflicted, knows what's due. All in one place.
 
 ---
 
@@ -136,7 +136,7 @@ This is the Register—the core of the platform. You come here when you need to 
 
 **Body content:**
 
-Regulatory conflicts are inevitable when you operate across multiple jurisdictions. One regulation may require a specific reporting standard while another prohibits that exact standard. One may require daily reporting while another requires monthly. The Conflicts page surfaces these visually as a graph. Each obligation is a node, each conflict is an edge coloured by conflict type (reporting overlap, definitional conflict, jurisdictional overlap, etc.). Users can click a conflict to compare the two obligations side-by-side and decide how to resolve it: clarify interpretation, build a single control that satisfies both, or escalate to legal.
+Regulatory conflicts are inevitable when you operate across multiple jurisdictions. One regulation may require a specific reporting standard while another prohibits that exact standard. One may require daily reporting while another requires monthly. The Conflicts page surfaces these visually as a circular graph. Each obligation is a node, each conflict is an edge coloured by conflict type (reporting overlap, definitional conflict, jurisdictional overlap, etc.). A table below lists all conflicts with their type, the two obligations involved, and a brief description. Users can see at a glance where their obligation network is tangled and decide how to resolve conflicts: clarify interpretation, build a single control that satisfies both, or escalate to legal.
 
 **Visual:**
 Large screenshot of the Conflicts page showing: a circular force-directed graph with 8–12 nodes (obligations) and 5–7 edges (conflicts) between them. Edges are colour-coded and labelled (e.g., "Reporting overlap", "Definitional conflict"). Below the graph is a table showing all conflicts with columns (Type, Obligation A, Obligation B, Description). One conflict is highlighted.

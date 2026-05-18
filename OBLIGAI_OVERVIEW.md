@@ -18,7 +18,7 @@ The user's day changes. Instead of reading PDFs and transcribing obligations int
 
 ObligaI operates as a four-stage pipeline, visible throughout the application.
 
-**Regulatory Source Scrapers** monitor eight regulatory bodies across eighteen jurisdictions—central banks in Brazil, Colombia, Peru, Panama and Mexico; the European Banking Authority; the UK PRA; the US Federal Reserve; and prudential regulators across Asia and Europe. Each scraper runs on a defined schedule, fetches new documents, and logs the ingestion status. The platform displays scraper health, the number of documents ingested, and the date of last successful refresh. Users can manually trigger a refresh if they know a new circular or rulebook has been published.
+**Regulatory Source Scrapers** monitor twelve regulatory bodies across eighteen jurisdictions—central banks in Brazil, Colombia, Peru, Panama and Mexico; the European Banking Authority; the UK PRA; the US Federal Reserve; and prudential regulators across Asia and Europe. Each scraper runs on a defined schedule, fetches new documents, and logs the ingestion status. The platform displays scraper health, the number of documents ingested, and the date of last successful refresh.
 
 **Obligation Registry** receives structured obligation records from the extraction engine. Each record includes a unique identifier, the regulation and jurisdiction it belongs to, a citation to the specific article or clause, a one-paragraph summary in plain English, a status (active, conflicted, implementing, pending, or inactive), a completeness percentage indicating how much of the obligation has been implemented, a deadline if one exists, the name of the team member responsible, a list of linked internal controls, and known conflicts with other obligations. The registry currently contains 131 mock obligations across 20 regulations and 18 jurisdictions.
 
@@ -46,7 +46,7 @@ The Conflicts page shows a circular graph visualization of all conflicting oblig
 
 ### Regulatory Sources
 
-The Sources page displays the status of all eight regulatory document scrapers. A table shows each scraper (e.g., "European Banking Authority", "Bank of Brazil"), its health status (healthy, degraded, or down), the date of the last successful refresh, and the number of documents currently being monitored. On the right, a side panel shows recent ingestion logs—which documents were fetched, when, and whether parsing succeeded. Users can manually trigger a scraper refresh or view detailed logs if a scraper has failed.
+The Sources page displays the status of all twelve regulatory document scrapers. A table shows each scraper (e.g., "European Banking Authority", "Bank of Brazil"), its health status (healthy, degraded, or down), the date of the last successful refresh, and the number of documents currently being monitored.
 
 ### Reports
 
@@ -54,7 +54,7 @@ The Reports page allows users to generate compliance reports for internal or reg
 
 ### Settings
 
-The Settings page has six tabs. The Jurisdictions tab allows users to configure which jurisdictions their institution operates in, which affects the scope filter. The Entity Types tab defines internal entity categories (subsidiary, branch, desk, etc.). The GRC Connections tab wires ObligaI to external systems like governance and risk platforms. The User Roles tab defines who can view, edit, or approve obligations. The Theme tab toggles between light and dark mode. The Notifications tab configures email and webhook alerts for deadline approaching, status changes, or new conflicts.
+The Settings page has six tabs. The Jurisdictions tab allows users to configure which jurisdictions their institution operates in, which affects the scope filter. The Entity Types tab defines internal entity categories (subsidiary, branch, desk, etc.). The GRC Connections tab wires ObligaI to external systems like governance and risk platforms. The User Roles tab defines who can view, edit, or approve obligations. The Theme tab toggles between light and dark mode. The Notifications tab configures email alerts for deadline approaching, status changes, or new conflicts.
 
 ## Coverage
 
