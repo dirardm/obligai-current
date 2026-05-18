@@ -39,7 +39,7 @@ function Col({ children }: { children: React.ReactNode }) {
 
 const ICONS = ["search", "filter", "export", "upload", "user", "settings", "close", "check", "alert", "info", "calendar", "lock", "link", "copy", "external-link", "sun", "moon", "regulation", "obligation", "conflict", "jurisdiction", "control", "audit-trail", "monitor", "chevron-up", "chevron-down", "chevron-left", "chevron-right"];
 
-const JURIS_CCS = ["eu", "gb", "us", "ca", "ch", "pe", "pa", "mx", "br", "jp", "sg", "hk", "au", "id", "my", "vn", "th", "internal"];
+const JURIS_CCS = ["eu", "uk", "us", "ca", "ch", "pe", "pa", "mx", "br", "jp", "sg", "hk", "au", "id", "my", "vn", "th", "internal", "co"];
 
 export default function GalleryClient() {
   const [activeTab, setActiveTab] = useState("overview");
