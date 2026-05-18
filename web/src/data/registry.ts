@@ -2,7 +2,6 @@ export type RegulationId =
   | "lcr"
   | "nsfr"
   | "almm"
-  | "irl"
   | "uk-pra"
   | "us-fed"
   | "canada-osfi"
@@ -37,8 +36,7 @@ export type JurisdictionId =
   | "id"
   | "my"
   | "vn"
-  | "th"
-  | "co";
+  | "th";
 
 export interface Regulation {
   id: RegulationId;
@@ -72,7 +70,6 @@ export const JURISDICTIONS: Jurisdiction[] = [
   { id: "my", label: "Malaysia", cc: "my" },
   { id: "vn", label: "Vietnam", cc: "vn" },
   { id: "th", label: "Thailand", cc: "th" },
-  { id: "co", label: "Colombia", cc: "internal" },
 ];
 
 export const REGULATIONS: Regulation[] = [
@@ -96,13 +93,6 @@ export const REGULATIONS: Regulation[] = [
     shortLabel: "ALMM",
     framework: "CRR II",
     jurisdictionId: "eu",
-  },
-  {
-    id: "irl",
-    label: "Indicador de Riesgo de Liquidez",
-    shortLabel: "IRL",
-    framework: "Circular Externa 042 - SFC",
-    jurisdictionId: "co",
   },
   {
     id: "uk-pra",
